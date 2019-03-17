@@ -41,7 +41,7 @@
 
 	.chart-row-2 {
 	display: flex;
-	padding: 30px 30px 0px 30px;
+	padding: 30px 30px 30px 30px;
 	}
 
 	.header {
@@ -72,9 +72,10 @@
 		font-family: lato, sans-serif;
 	}
 
-	#chart0-container {
+	#chart1-container {
 		background-color: #fff;
 		margin-right: 15px;
+		margin-left: 15px;
 		width: 100%;
 		border-radius: 5px;
 	}
@@ -87,12 +88,10 @@
 		max-width: 50%;
 	}
 
-	#chart0 {
-		padding: 30px 30px 30px 30px;
-	}
 
-	#chart1-container {
+	#chart2-container {
 		background-color: #fff;
+		margin-right: 15px;
 		margin-left: 15px;
 		width: 100%;
 		border-radius: 5px;
@@ -106,22 +105,6 @@
 		max-width: 50%;
 	}
 
-	#chart2-container {
-		background-color: #fff;
-		margin-right: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
-
-	@media (min-width: 992px)
-	#chart2-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-
 	#chart3-container {
 		background-color: #fff;
 		margin-right: 15px;
@@ -131,13 +114,12 @@
 	}
 
 	@media (min-width: 992px)
-	#chart3-container {
+	#chart2-container {
 		flex-grow: 0;
 		flex-shrink: 0;
 		flex-basis: 50%;
 		max-width: 50%;
 	}
-
 
 
 	#chart4-container {
@@ -149,7 +131,7 @@
 	}
 
 	@media (min-width: 992px)
-	#chart4-container {
+	#chart3-container {
 		flex-grow: 0;
 		flex-shrink: 0;
 		flex-basis: 50%;
@@ -160,6 +142,25 @@
 
 	#chart5-container {
 		background-color: #fff;
+		margin-right: 15px;
+		margin-left: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart4-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+
+
+	#chart6-container {
+		background-color: #fff;
+		margin-right: 15px;
 		margin-left: 15px;
 		width: 100%;
 		border-radius: 5px;
@@ -218,3 +219,8 @@
   		color: #8c8e90;
   		text-align: center;
   	}
+
+	#selector {
+	  	padding: 15px 0px 0px 30px;
+
+	  }

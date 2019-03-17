@@ -1,195 +1,108 @@
 
-			// set the dimensions of the canvas
-			var margin = {top: 20, right: 20, bottom: 70, left: 40},
-		    	width = 350 - margin.left - margin.right,
-		    	height = 250 - margin.top - margin.bottom;
+///////////////////////////////////////////////////
+// 
+//				Topline Metrics Charts
+//
+///////////////////////////////////////////////////
 
-		    //set the ranges
-		    var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
-		    var y = d3.scaleLinear().range([height, 0]);
-
-			// define the axis
-			var xAxis = d3.axisBottom(x);
-		 	var yAxis = d3.axisLeft(y);
-
-			// add the SVG element
-			var svg = d3.select("#chart0")
-				.append("svg")
-				.attr("preserveAspectRatio", "xMinYMin meet")
-				.attr("viewBox", "0 0 350 250")
-		    	.append("g")
-		    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-			// load the data
-			d3.json("dc_crime_data.php").then(function(data) {
-
-			    data.forEach(function(d) {
-			        d.OFFENSE = d.OFFENSE;
-			        d.TOTAL = +d.TOTAL;
-			    });
-
-				// add axis
-				svg.append("g")
-				  .attr("class", "x axis")
-				  .attr("transform", "translate(0," + height + ")")
-				  .call(xAxis)
-				.selectAll("text")
-				  .style("text-anchor", "end")
-				  .attr("dx", "-.8em")
-				  .attr("dy", "-.55em")
-				  .attr("transform", "rotate(-90)" )
-				  .attr("class", "axis-style");
-
-				svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
-				  .append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 0 - (margin.top / 2))
-				  .attr("dy", ".71em")
-				  .style("text-anchor", "middle")
-				  .text("Frequency")
-				  .attr("class", "axis-style");
-
-			  //add title
-			  svg.append("text")
-        		.attr("x", (width / 2))             
-        		.attr("y", 0 - (margin.top / 2))
-        		.attr("text-anchor", "middle")  
-        		.attr("class", "axis-style")
-        		.text("Frequency of Crimes");
-
-			  // Add bar chart
-			  svg.selectAll("bar")
-			      .data(data)
-			      .enter()
-			      .append("rect")
-			      .attr("x", function(d) { return x(d.OFFENSE); })
-			      .attr("y", function(d) { return y(d.TOTAL); })
-			      .attr("width", x.bandwidth())
-			      .attr("height", function(d) { return height - y(d.TOTAL); })
-			      .attr("fill", "steelblue")
-			      .attr("class", "bar")
+// Get the data
+d3.csv("data/speech_polarity_and_diversity.csv").then(function(data) {
+				data.forEach(function(d) {
+					d.president_name = d.president_name;
+					d.n = +d.n;
+					d.speech_date = +d.speech_date;
+					d.negative = +d.negative;
+					d.positive = +d.positive;
+					d.sentiment = +d.sentiment;
+					d.negative_ratio = +d.negative_ratio;
 
 				});
 
-				// Set the dimensions of the canvas / graph
-				var	margin2 = {top: 30, right: 20, bottom: 30, left: 50},
-					width2 = 350 - margin2.left - margin2.right,
-					height2 = 250 - margin2.top - margin2.bottom;
+	// initailize charts			
+    var svg = d3.select('#chart1');
+	var svg2 = d3.select('#chart2');
+	var svg3 = d3.select('#chart3');
+	var svg4 = d3.select('#chart4');
 
-				// Parse the date / time
-				var	parseDate = d3.timeParse("%Y-%m-%d");
+	// get unique president names
+	var presidents = [];
 
-		    	var x2 = d3.scaleTime().range([0, width2]);
-		    	var y2 = d3.scaleLinear().range([height2, 0]);
+	for (var i = 0; i < data.length; i++) {
+		presidents.push(data[i].president_name);
+	}
 
-					// define the axis
-				var xAxis2 = d3.axisBottom(x2);
-		 		var yAxis2 = d3.axisLeft(y2);
+	// function to get word diversity
+	var topline_metrics_charts = function(name) {
 
+		// filter data to selected name
+		var data_filtered = data.filter(function(d) {
+			return d.president_name==name;
+		});
 
-				// Define the scaleLinear
-				var	valueline = d3.line()
-					.x(function(d) { return x2(d.REPORT_DAT); })
-					.y(function(d) { return y2(d.TOTAL); });
-				    
-				// Adds the svg canvas
-				var	chart1 = d3.select("#chart1")
-					.append("svg")
-					.attr("preserveAspectRatio", "xMinYMin meet")
-					.attr("viewBox", "0 0 350 250")
-					.append("g")
-						.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+			// chart 1 - word diversity
+			var word_diversity = svg.selectAll(".diversity")
+				.data(data_filtered)
+				.enter()
+				.append("p")
+				.text(function(d) {return d.n;})
+				.attr("class", "summary-text-num")
+				.attr("text-anchor", "middle");
 
-				// Get the data
-				d3.json("dc_crime_data2.php").then(function(data) {
+			// chart 2 - negative words
+			var word_diversity = svg2.selectAll(".negative")
+				.data(data_filtered)
+				.enter()
+				.append("p")
+				.text(function(d) {return d.negative;})
+				.attr("class", "summary-text-num")
+				.attr("text-anchor", "middle");
 
-				    data.forEach(function(d) {
-				        d.REPORT_DAT = parseDate(d.REPORT_DAT);
-				        d.TOTAL = +d.TOTAL;
-				    });
+			// chart 3 - positive words
+			var word_diversity = svg3.selectAll(".positive")
+				.data(data_filtered)
+				.enter()
+				.append("p")
+				.text(function(d) {return d.positive;})
+				.attr("class", "summary-text-num")
+				.attr("text-anchor", "middle");
 
+			// chart 2 - sentiment score
+			var word_diversity = svg4.selectAll(".sentiment")
+				.data(data_filtered)
+				.enter()
+				.append("p")
+				.text(function(d) {return d.sentiment;})
+				.attr("class", "summary-text-num")
+				.attr("text-anchor", "middle");
 
-					// Scale the range of the data
-					x2.domain(d3.extent(data, function(d) { return d.REPORT_DAT; }));
-					y2.domain([0, d3.max(data, function(d) { return d.TOTAL; })]);
+	};
 
-					// Add the valueline path.
-					chart1.append("path")
-						.data([data])
-						.attr("class", "line")
-						.attr("d", valueline);
+	// initialize selector
+    topline_metrics_charts(presidents[0]);
 
-					// Add the X Axis
-					chart1.append("g")
-						.attr("class", "x axis")
-						.attr("transform", "translate(0," + height2 + ")")
-						.call(xAxis2);
+    // make year picker
+  	var nameSelector = d3.select("#selector")
+  		.append("select");
 
-					// Add the Y Axis
-					chart1.append("g")
-						.attr("class", "y axis")
-						.call(yAxis2);
+  	nameSelector.selectAll(".name-select")
+	    .data(presidents)
+	    .enter()
+	    .append("option")
+	    .attr("value", function(d) {return d;})
+	    .text(function(d) {return d;})
+	    .attr("class", "name-select");
 
-				});
+    nameSelector.on("change", function() {
+    	var selection = d3.select(this)
+    		.property("value");
+    	
+    	// remove old value
+		d3.selectAll("#chart1").selectAll("p").remove();
+		d3.selectAll("#chart2").selectAll("p").remove();
+		d3.selectAll("#chart3").selectAll("p").remove();				
+		d3.selectAll("#chart4").selectAll("p").remove();
 
-				// Get the data
-				d3.json("dc_crime_data3.php").then(function(data) {
+    	topline_metrics_charts(selection);});
 
-					// show total crimes data value
-					d3.select("#chart2")
-						.selectAll("p")
-						.data(data)
-						.enter()
-						.append("p")
-						.text(function(d) {return d.TOTAL;})
-						.attr("class", "summary-text-num")
-						.attr("text-anchor", "middle");
+});
 
-				});
-
-				// Get the data
-				d3.json("dc_crime_data3.php").then(function(data) {
-
-					// show total crimes data value
-					d3.select("#chart3")
-						.selectAll("p")
-						.data(data)
-						.enter()
-						.append("p")
-						.text(function(d) {return d.TOTAL;})
-						.attr("class", "summary-text-num")
-						.attr("text-anchor", "middle");
-
-				});
-
-				// Get the data
-				d3.json("dc_crime_data3.php").then(function(data) {
-
-					// show total crimes data value
-					d3.select("#chart4")
-						.selectAll("p")
-						.data(data)
-						.enter()
-						.append("p")
-						.text(function(d) {return d.TOTAL;})
-						.attr("class", "summary-text-num")
-						.attr("text-anchor", "middle");
-
-				});
-
-				// Get the data
-				d3.json("dc_crime_data3.php").then(function(data) {
-
-					// show total crimes data value
-					d3.select("#chart5")
-						.selectAll("p")
-						.data(data)
-						.enter()
-						.append("p")
-						.text(function(d) {return d.TOTAL;})
-						.attr("class", "summary-text-num")
-						.attr("text-anchor", "middle");
-
-				});
