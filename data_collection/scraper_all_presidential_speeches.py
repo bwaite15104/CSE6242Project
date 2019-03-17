@@ -91,7 +91,7 @@ for j in range(1, total_pages+1):
 speech_df = pd.DataFrame.from_dict(speech_dict)
 
 # write csv
-speech_df.to_csv('all_presidential_speeches4.csv', index=False)
+speech_df.to_csv('all_presidential_speeches.csv', index=False)
 
 # close driver
 driver.close()
