@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+	<style>	
+
+	/* The sidebar menu */
+	.sidenav {
+	  height: 100%; /* Full-height: remove this if you want "auto" height */
+	  width: 240px; /* Set the width of the sidebar */
+	  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+	  top: 0; /* Stay at the top */	
+	  left: 0;
+	  background-color: #323f51; /* Black */
+	  overflow-x: hidden; /* Disable horizontal scroll */
+	  padding-top: 75px;
+	}
+
+	/* The navigation menu links */
+	.sidenav a {
+	  padding: 10px 20px 10px 20px;
+	  text-decoration: none;
+	  font-size: 25px;
+	  color: #818181;
+	  display: block;
+	  font-size: .99rem;
+	  font-family: Lato, sans-serif;
+	}
+
+	/* When you mouse over the navigation links, change their color */
+	.sidenav a:hover {
+	  color: #f1f1f1;
+	}
+
+
+	body {
+		margin-left: 240px;
+		margin-top: 75px;
+		background-color: #edf2f6;
+	}
+
+	.chart-row-1 {
+		display: flex;
+		padding: 30px 30px 30px 30px;
+	}
+
+	.chart-row-2 {
+	display: flex;
+	padding: 30px 30px 0px 30px;
+	}
+
+	.header {
+		position: fixed;
+		width: 100%;
+		height: 70px;
+		background-color: #4670ad!important;
+		top: 0;
+		left: 0;
+		z-index: 1;
+	}
+
+	.header p {
+		padding-left: 20px;
+		font-size: 1.5rem;
+		font-weight: 400;
+		font-family: lato, sans-serif;
+		color: #fff;
+		text-align: left;
+	}
+
+	.headline-text {
+		font-weight: 400;
+		font-size: 20px;
+		color: #8c8e90;
+		padding-top: 25px;
+		margin-left: 30px;
+		font-family: lato, sans-serif;
+	}
+
+	#chart0-container {
+		background-color: #fff;
+		margin-right: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart0-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+	#chart0 {
+		padding: 30px 30px 30px 30px;
+	}
+
+	#chart1-container {
+		background-color: #fff;
+		margin-left: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart1-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+	#chart2-container {
+		background-color: #fff;
+		margin-right: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart2-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+
+	#chart3-container {
+		background-color: #fff;
+		margin-right: 15px;
+		margin-left: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart3-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+
+
+	#chart4-container {
+		background-color: #fff;
+		margin-right: 15px;
+		margin-left: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart4-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+
+
+	#chart5-container {
+		background-color: #fff;
+		margin-left: 15px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	@media (min-width: 992px)
+	#chart5-container {
+		flex-grow: 0;
+		flex-shrink: 0;
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+	
+	.bar{
+    	fill: #4670ad;
+  	}
+
+  	.bar:hover{
+    	fill: brown;
+  	}
+
+  	.line {
+  		fill: none;
+  		stroke: steelblue;
+  		stroke-width: 2px;
+  	}
+
+  	.axis-style {
+  		font-size: 11px;
+        font-family: sans-serif;
+        fill: #8c8e90;
+  	}
+
+  	.summary-text-num {
+  		font-size: 2.5rem;
+  		font-family: sans-serif;
+  		font-weight: 400;
+  		text-align: center;
+  		font-color: #383838;
+  		margin: 0px 0px 0px 0px;
+  		padding: 0px 0px 30px 0px;
+
+  	}
+
+  	.summary-text-top {
+  		font-size: 1.1vw;
+  		font-weight: 400;
+  		color: #8c8e90;
+  		font-family: sans-serif;
+  		text-align: center;
+  	}
+
+  	.summary-text-sub {
+  		font-size: .8rem;
+  		color: #8c8e90;
+  		text-align: center;
+  	}
+
+
+	</style>
+</head>
+
+<body>
+	<div>
+		<div class="header">
+			<p>DC Crime Dashboard</p>
+		</div>
+		<div class="sidenav">
+			  <a href="http://192.168.0.163:15104/">Home</a>
+			  <a href="#">Services</a>
+			  <a href="#">Clients</a>
+			  <a href="#">Contact</a>
+		</div>
+		<div class="headline-text">
+			Current Data: Today
+		</div>
+		<div class="chart-row-2">
+			<div id="chart2-container">
+				<p class="summary-text-top">Total Crimes</p>
+				<p class="summary-text-sub">(count)</p>
+				<div id="chart2"></div>
+			</div>
+			<div id="chart3-container">
+				<p class="summary-text-top">Total Crimes</p>
+				<p class="summary-text-sub">(count)</p>
+				<div id="chart3"></div>
+			</div>
+			<div id="chart4-container">
+				<p class="summary-text-top">Total Crimes</p>
+				<p class="summary-text-sub">(count)</p>
+				<div id="chart4"></div>
+			</div>
+			<div id="chart5-container">
+				<p class="summary-text-top">Total Crimes</p>
+				<p class="summary-text-sub">(count)</p>
+				<div id="chart5"></div>
+			</div>
+		</div>
+		<div class="chart-row-1">
+			<div id="chart0-container">
+				<div id="chart0">
+				</div>
+			</div>
+			<div id="chart1-container">
+				<div id="chart1">
+				</div>
+			</div>
+
+			<script src="http://d3js.org/d3.v5.min.js"></script>
+
+			<script>
+
+
+			// set the dimensions of the canvas
+			var margin = {top: 20, right: 20, bottom: 70, left: 40},
+		    	width = 350 - margin.left - margin.right,
+		    	height = 250 - margin.top - margin.bottom;
+
+		    //set the ranges
+		    var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
+		    var y = d3.scaleLinear().range([height, 0]);
+
+			// define the axis
+			var xAxis = d3.axisBottom(x);
+		 	var yAxis = d3.axisLeft(y);
+
+			// add the SVG element
+			var svg = d3.select("#chart0")
+				.append("svg")
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 350 250")
+		    	.append("g")
+		    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			// load the data
+			d3.json("dc_crime_data.php").then(function(data) {
+
+			    data.forEach(function(d) {
+			        d.OFFENSE = d.OFFENSE;
+			        d.TOTAL = +d.TOTAL;
+			    });
+
+				// add axis
+				svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height + ")")
+				  .call(xAxis)
+				.selectAll("text")
+				  .style("text-anchor", "end")
+				  .attr("dx", "-.8em")
+				  .attr("dy", "-.55em")
+				  .attr("transform", "rotate(-90)" )
+				  .attr("class", "axis-style");
+
+				svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+				  .append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 0 - (margin.top / 2))
+				  .attr("dy", ".71em")
+				  .style("text-anchor", "middle")
+				  .text("Frequency")
+				  .attr("class", "axis-style");
+
+			  //add title
+			  svg.append("text")
+        		.attr("x", (width / 2))             
+        		.attr("y", 0 - (margin.top / 2))
+        		.attr("text-anchor", "middle")  
+        		.attr("class", "axis-style")
+        		.text("Frequency of Crimes");
+
+			  // Add bar chart
+			  svg.selectAll("bar")
+			      .data(data)
+			      .enter()
+			      .append("rect")
+			      .attr("x", function(d) { return x(d.OFFENSE); })
+			      .attr("y", function(d) { return y(d.TOTAL); })
+			      .attr("width", x.bandwidth())
+			      .attr("height", function(d) { return height - y(d.TOTAL); })
+			      .attr("fill", "steelblue")
+			      .attr("class", "bar")
+
+				});
+
+				// Set the dimensions of the canvas / graph
+				var	margin2 = {top: 30, right: 20, bottom: 30, left: 50},
+					width2 = 350 - margin2.left - margin2.right,
+					height2 = 250 - margin2.top - margin2.bottom;
+
+				// Parse the date / time
+				var	parseDate = d3.timeParse("%Y-%m-%d");
+
+		    	var x2 = d3.scaleTime().range([0, width2]);
+		    	var y2 = d3.scaleLinear().range([height2, 0]);
+
+					// define the axis
+				var xAxis2 = d3.axisBottom(x2);
+		 		var yAxis2 = d3.axisLeft(y2);
+
+
+				// Define the scaleLinear
+				var	valueline = d3.line()
+					.x(function(d) { return x2(d.REPORT_DAT); })
+					.y(function(d) { return y2(d.TOTAL); });
+				    
+				// Adds the svg canvas
+				var	chart1 = d3.select("#chart1")
+					.append("svg")
+					.attr("preserveAspectRatio", "xMinYMin meet")
+					.attr("viewBox", "0 0 350 250")
+					.append("g")
+						.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+				// Get the data
+				d3.json("dc_crime_data2.php").then(function(data) {
+
+				    data.forEach(function(d) {
+				        d.REPORT_DAT = parseDate(d.REPORT_DAT);
+				        d.TOTAL = +d.TOTAL;
+				    });
+
+
+					// Scale the range of the data
+					x2.domain(d3.extent(data, function(d) { return d.REPORT_DAT; }));
+					y2.domain([0, d3.max(data, function(d) { return d.TOTAL; })]);
+
+					// Add the valueline path.
+					chart1.append("path")
+						.data([data])
+						.attr("class", "line")
+						.attr("d", valueline);
+
+					// Add the X Axis
+					chart1.append("g")
+						.attr("class", "x axis")
+						.attr("transform", "translate(0," + height2 + ")")
+						.call(xAxis2);
+
+					// Add the Y Axis
+					chart1.append("g")
+						.attr("class", "y axis")
+						.call(yAxis2);
+
+				});
+
+				// Get the data
+				d3.json("dc_crime_data3.php").then(function(data) {
+
+					// show total crimes data value
+					d3.select("#chart2")
+						.selectAll("p")
+						.data(data)
+						.enter()
+						.append("p")
+						.text(function(d) {return d.TOTAL;})
+						.attr("class", "summary-text-num")
+						.attr("text-anchor", "middle");
+
+				});
+
+				// Get the data
+				d3.json("dc_crime_data3.php").then(function(data) {
+
+					// show total crimes data value
+					d3.select("#chart3")
+						.selectAll("p")
+						.data(data)
+						.enter()
+						.append("p")
+						.text(function(d) {return d.TOTAL;})
+						.attr("class", "summary-text-num")
+						.attr("text-anchor", "middle");
+
+				});
+
+				// Get the data
+				d3.json("dc_crime_data3.php").then(function(data) {
+
+					// show total crimes data value
+					d3.select("#chart4")
+						.selectAll("p")
+						.data(data)
+						.enter()
+						.append("p")
+						.text(function(d) {return d.TOTAL;})
+						.attr("class", "summary-text-num")
+						.attr("text-anchor", "middle");
+
+				});
+
+				// Get the data
+				d3.json("dc_crime_data3.php").then(function(data) {
+
+					// show total crimes data value
+					d3.select("#chart5")
+						.selectAll("p")
+						.data(data)
+						.enter()
+						.append("p")
+						.text(function(d) {return d.TOTAL;})
+						.attr("class", "summary-text-num")
+						.attr("text-anchor", "middle");
+
+				});
+
+			</script>
+		</div>
+	</div>
+</body>
+</html>
