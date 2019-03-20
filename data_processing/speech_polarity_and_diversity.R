@@ -9,6 +9,7 @@ library(tidytext)
 library(lubridate)
 library(dplyr)
 library(tidyr)
+library(tidyverse)
 
 # read in data
 inaugural_speeches <- read_csv('data/presidential_inaugural_speeches.csv')
