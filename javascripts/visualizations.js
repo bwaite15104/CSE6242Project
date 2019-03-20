@@ -5,18 +5,16 @@
 //
 ///////////////////////////////////////////////////
 
-// Get the data
-d3.csv("data/speech_polarity_and_diversity.csv").then(function(data) {
-				data.forEach(function(d) {
-					d.president_name = d.president_name;
-					d.n = +d.n;
-					d.speech_date = +d.speech_date;
-					d.negative = +d.negative;
-					d.positive = +d.positive;
-					d.sentiment = +d.sentiment;
-					d.negative_ratio = +d.negative_ratio;
+// load data using promises
+var promises = [
+  d3.csv("data/speech_polarity_and_diversity.csv"),
+  d3.csv("data/top_20_words_by_president.csv")
+]
 
-				});
+Promise.all(promises).then(ready)
+
+function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
+
 
 	// initailize charts			
     var svg = d3.select('#chart1');
@@ -27,15 +25,15 @@ d3.csv("data/speech_polarity_and_diversity.csv").then(function(data) {
 	// get unique president names
 	var presidents = [];
 
-	for (var i = 0; i < data.length; i++) {
-		presidents.push(data[i].president_name);
+	for (var i = 0; i < speech_polarity_and_diversity.length; i++) {
+		presidents.push(speech_polarity_and_diversity[i].president_name);
 	}
 
 	// function to get word diversity
 	var topline_metrics_charts = function(name) {
 
 		// filter data to selected name
-		var data_filtered = data.filter(function(d) {
+		var data_filtered = speech_polarity_and_diversity.filter(function(d) {
 			return d.president_name==name;
 		});
 
@@ -77,8 +75,110 @@ d3.csv("data/speech_polarity_and_diversity.csv").then(function(data) {
 
 	};
 
+	/////////////////////////////////////////////////
+	//
+	//			Top Words Bargraph
+	//
+	/////////////////////////////////////////////////
+
+	// format data
+	top_20_words_by_president.forEach(function(d) {
+		d.president_name = d.president_name;
+		d.word = d.word;
+		d.word_count = +d.word_count;
+	});
+
+    // sort by word count
+	top_20_words_by_president.sort(function(a, b){
+	    if(a.word_count < b.word_count) { return -1; }
+	    if(a.word_count > b.word_count) { return 1; }
+	    return 0;
+	});
+
+	// set margins and padding
+	var margin = {top: 60, right: 20, bottom: 20, left: 100},
+    	width = 500 - margin.left - margin.right,
+    	height = 500 - margin.top - margin.bottom,
+    	padding = 20;
+
+	var barViz = function(name) {
+
+		// filter data
+		var top_20_words_filtered = top_20_words_by_president.filter(function(d) {
+			return d.president_name==name;
+		})
+
+	    // make scales
+	    var xScale = d3.scaleLinear()
+	    	.domain([0, d3.max(top_20_words_filtered, function(d) {return d.word_count;})])
+	    	.range([0, width]);
+
+	    var yScale = d3.scaleBand()
+	    	.range([height, 0]).padding(.2)
+	    	.domain(top_20_words_filtered.map(function(d) {return d.word;}));
+
+	   	// make y axis
+	   	var yAxis  = d3.axisLeft(yScale).ticks(0);
+
+	    // add svg element
+	    var svg5 = d3.select("#chart5")
+	    	.append("svg")
+	    	.attr("width", width + margin.left + margin.right)
+	        .attr("height", height + margin.top + margin.bottom)
+	        .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	    // add bar group
+	    var bars = svg5.selectAll(".bar")
+	    	.data(top_20_words_filtered)
+	    	.enter()
+	    	.append("g");
+
+	    // add bars
+		bars.append("rect")
+			.attr("class", "bar")
+			.attr("y", function(d) {return yScale(d.word);})
+			.attr("height", yScale.bandwidth())
+			.attr("x", 0)
+			.attr("width", function(d) {return xScale(d.word_count);})
+			.style("fill", "#A9A9A9");
+
+		// add y axis
+		svg5.append("g")
+			.attr("class", "axis")
+			.call(yAxis);
+
+        // add map title
+        svg5.append("text")
+            .attr("text-anchor", "center")
+            .attr("x", width / 8)
+            .attr("y", -10)
+            .text("Top Words Used in Speech")
+            .style("font-size", "24px")
+            .style("font-weight", 1000);
+
+
+    	// mouseover function
+    	bars.on("mouseover", function() {
+    		d3.select(this)
+    			.select("rect")
+    			.style("fill", "steelblue");
+
+    	});
+
+    	// mouseout function
+    	bars.on("mouseout", function() {
+    		d3.select(this)
+    		.select("rect")
+    			.style("fill", "#A9A9A9");
+
+    	}); 
+
+	};
+
 	// initialize selector
     topline_metrics_charts(presidents[0]);
+    barViz(presidents[0]);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
@@ -101,8 +201,10 @@ d3.csv("data/speech_polarity_and_diversity.csv").then(function(data) {
 		d3.selectAll("#chart2").selectAll("p").remove();
 		d3.selectAll("#chart3").selectAll("p").remove();				
 		d3.selectAll("#chart4").selectAll("p").remove();
+		d3.selectAll("#chart5").selectAll("svg").remove();
 
-    	topline_metrics_charts(selection);});
+    	topline_metrics_charts(selection);
+    	barViz(selection);});
 
-});
+};
 
