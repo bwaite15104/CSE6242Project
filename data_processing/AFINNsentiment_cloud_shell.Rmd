@@ -194,8 +194,7 @@ BingScore<-sent_table[1]/sent_table[2]
 tidy_pres_sentimentA_pres <- tidy_pres_sentimentA %>% 
                             group_by(president_name) %>% 
                               summarise(avg_score=mean(score),
-                                        sum_score=sum(score),
-                                        avg_rating = mean(rating))
+                                        sum_score=sum(score))
     
 
 ggplot(tidy_pres_sentimentA_pres, aes(x=president_name, y=avg_score))
