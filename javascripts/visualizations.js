@@ -43,7 +43,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.data(data_filtered)
 				.enter()
 				.append("p")
-				.text(function(d) {return d.n;})
+				.text(function(d) {return d.speech_diversity;})
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "middle");
 
