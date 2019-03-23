@@ -8,12 +8,13 @@
 // load data using promises
 var promises = [
   d3.csv("data/speech_polarity_and_diversity.csv"),
-  d3.csv("data/top_20_words_by_president.csv")
+  d3.csv("data/top_20_words_by_president.csv"),
+  d3.csv("data/presidential_topics.csv")
 ]
 
 Promise.all(promises).then(ready)
 
-function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
+function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics]) {
 
 
 	// initailize charts			
@@ -96,10 +97,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
 	});
 
 	// set margins and padding
-	var margin = {top: 60, right: 20, bottom: 20, left: 100},
-    	width = 500 - margin.left - margin.right,
-    	height = 500 - margin.top - margin.bottom,
-    	padding = 20;
+	var margin1 = {top: 60, right: 20, bottom: 20, left: 100},
+    	width1 = 500 - margin1.left - margin1.right,
+    	height1 = 500 - margin1.top - margin1.bottom,
+    	padding1 = 20;
 
 	var barViz = function(name) {
 
@@ -111,10 +112,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
 	    // make scales
 	    var xScale = d3.scaleLinear()
 	    	.domain([0, d3.max(top_20_words_filtered, function(d) {return d.word_count;})])
-	    	.range([0, width]);
+	    	.range([0, width1]);
 
 	    var yScale = d3.scaleBand()
-	    	.range([height, 0]).padding(.2)
+	    	.range([height1, 0]).padding(.2)
 	    	.domain(top_20_words_filtered.map(function(d) {return d.word;}));
 
 	   	// make y axis
@@ -123,10 +124,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
 	    // add svg element
 	    var svg5 = d3.select("#chart5")
 	    	.append("svg")
-	    	.attr("width", width + margin.left + margin.right)
-	        .attr("height", height + margin.top + margin.bottom)
+	    	.attr("width", width1 + margin1.left + margin1.right)
+	        .attr("height", height1 + margin1.top + margin1.bottom)
 	        .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	        .attr("transform", "translate(" + margin1.left + "," + margin1.top + ")");
 
 	    // add bar group
 	    var bars = svg5.selectAll(".bar")
@@ -141,7 +142,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
 			.attr("height", yScale.bandwidth())
 			.attr("x", 0)
 			.attr("width", function(d) {return xScale(d.word_count);})
-			.style("fill", "#A9A9A9");
+			.style("fill", "#FF8C00");
 
 		// add y axis
 		svg5.append("g")
@@ -151,7 +152,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
         // add map title
         svg5.append("text")
             .attr("text-anchor", "center")
-            .attr("x", width / 8)
+            .attr("x", width1 / 8)
             .attr("y", -10)
             .text("Top Words Used in Speech")
             .style("font-size", "24px")
@@ -170,15 +171,145 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
     	bars.on("mouseout", function() {
     		d3.select(this)
     		.select("rect")
-    			.style("fill", "#A9A9A9");
+    			.style("fill", "#FF8C00");
 
     	}); 
 
 	};
 
+	/////////////////////////////////////////////////
+	//
+	//			Topics Donut
+	//
+	/////////////////////////////////////////////////
+
+	// set margins and padding
+	var margin2 = {top: 20, right: 20, bottom: 20, left: 20},
+    	width2 = 500 - margin2.left - margin2.right,
+    	height2 = 500 - margin2.top - margin2.bottom,
+    	padding2 = 20,
+    	outerRadius = width2 / 2.5,
+    	innerRadius = width2/3.3;
+
+    // initialize pie
+    var pie = d3.pie()
+    	.value(function(d) {return d.topic_percent;});
+
+    // make arc
+    var arc = d3.arc()
+    	.innerRadius(innerRadius)
+    	.outerRadius(outerRadius);
+
+    // set up 10 color ordinal
+    var color = d3.scaleOrdinal(d3.schemeSet3);
+
+	// format data
+	presidential_topics.forEach(function(d) {
+		d.president_name = d.president_name;
+		d.topic = d.topic;
+		d.topic_percent = +d.topic_percent;
+	});
+
+    // sort by word count
+	presidential_topics.sort(function(a, b){
+	    if(a.topic_percent < b.topic_percent) { return -1; }
+	    if(a.topic_percent > b.topic_percent) { return 1; }
+	    return 0;
+	});
+
+	var donutViz = function(name) {
+
+		// filter data
+		var topics_filtered = presidential_topics.filter(function(d) {
+			return d.president_name==name;
+		})
+
+
+	    // add svg element
+	    var svg6 = d3.select("#chart6")
+	    	.append("svg")
+	    	.attr("width", width2 + margin2.left + margin2.right)
+	        .attr("height", height2 + margin2.top + margin2.bottom)
+	        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+	    // set up groups
+	    var arcs = svg6.selectAll("g.arc")
+	    	.data(pie(topics_filtered))
+	    	.enter()
+	    	.append("g")
+	    	.attr("class", "arc")
+	    	.attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")");
+
+	    // draw arc paths
+	    arcs.append("path")
+	    	.attr("fill", function(d, i) {return color(i);})
+	    	.attr("d", arc);
+
+	    // add text labels for wedges
+	    arcs.append("text")
+	    	.attr("transform", function(d) {
+	    		return "translate(" + arc.centroid(d) + ")";
+	    	})
+	    	.attr("text-anchor", "middle")
+	    	.text(function(d, i) {
+	    		if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) > 4) {
+	    		return Math.floor((topics_filtered[i].topic_percent / 1) * 100) + '%';
+	    		}	
+	    	})
+
+	    // add title
+	    svg6.append("text")
+	        .attr("text-anchor", "center")
+	        .attr("x", margin2.left *4)
+	        .attr("y", padding2)
+	        .text("Topics Discussed in Speech")
+	        .style("font-size", "24px")
+	        .style("font-weight", 1000);
+
+	    // add tooltip
+	    arcs.call(pieToolTip);
+
+	    // create tooltip
+	    function pieToolTip(selection) {
+
+	    // add tooltip (svg circle element) when mouse enters slice
+	    selection.on('mouseenter', function(data) {
+
+	        svg6.append('text')
+	            .attr('class', 'toolCircle')
+	            .attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")")
+	            .html(function() {	
+
+				    // return tip values
+				    return Math.floor((data.data.topic_percent / 1) * 100) + "% Focus On " + data.data.topic;
+
+	        	})
+	            .style('font-size', '.9em')
+	            .style('text-anchor', 'middle'); // centres text in tooltip
+
+	        svg6.append('circle')
+	            .attr('class', 'toolCircle')
+				.attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")")
+	            .attr('r', innerRadius *.9) 
+	            .style('fill', color(data.data.index)) // colour based on category mouse is over
+	            .style('fill-opacity', 0.35);
+
+	    	});
+
+		    // remove the tooltip when mouse leaves the slice/label
+		    selection.on('mouseout', function () {
+		        d3.selectAll('.toolCircle').remove();
+		    });
+		};
+
+	};
+
+
+
 	// initialize selector
     topline_metrics_charts(presidents[0]);
     barViz(presidents[0]);
+    donutViz(presidents[0]);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
@@ -202,9 +333,11 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president]) {
 		d3.selectAll("#chart3").selectAll("p").remove();				
 		d3.selectAll("#chart4").selectAll("p").remove();
 		d3.selectAll("#chart5").selectAll("svg").remove();
+		d3.selectAll("#chart6").selectAll("svg").remove();
 
     	topline_metrics_charts(selection);
-    	barViz(selection);});
+    	barViz(selection);
+    	donutViz(selection);});
 
 };
 
