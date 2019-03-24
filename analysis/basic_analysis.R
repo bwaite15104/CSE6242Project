@@ -14,8 +14,9 @@ library(lubridate)
 
 # Load datasets
 approval <- tbl_df(read.csv('Presidential Approval Ratings.csv', stringsAsFactors = FALSE))
-speech_sentiments <- tbl_df(read.csv('speech_polarity_and_diversity.csv', stringsAsFactors = FALSE))
+#speech_sentiments <- tbl_df(read.csv('speech_polarity_and_diversity.csv', stringsAsFactors = FALSE))
 presidents <- tbl_df(read.csv('president_terms.csv', stringsAsFactors = FALSE))
+speech_sentiments <- tbl_df(read.csv('speech_polarity_for_model.csv', stringsAsFactors = FALSE))
 
 # -----------------------------------------------------------------
 #                  Approval Rating Structure, Analysis + Vizz
@@ -61,12 +62,13 @@ monthly_approval <- df_approve %>%
   group_by(President,
            start_year,
            month = floor_date(start_date, "month")) %>%
-  summarize(avg_approval = mean(approval_rate))
+  summarize(avg_approval = mean(approval_rate)) %>%
+  rename(president = President)
 
 monthly_approval %>%
-  ggplot(aes(x = month, y = avg_approval, color = President)) +
+  ggplot(aes(x = month, y = avg_approval, color = president)) +
   geom_line() +
-  facet_wrap(~ President, scales = "free") +
+  facet_wrap(~ president, scales = "free") +
   theme(legend.position="none") +
   labs(x = 'Date', y = 'Average Approval')
   
@@ -122,37 +124,197 @@ first_100 %>%
        title = 'First 100 Days Approval Rating by President')
 
 # -----------------------------------------------------------------------
-#        Analyze sentiment vs. Approval Rating Checkpoints
+#        Analyze monthly sentiment by president
 # -----------------------------------------------------------------------
 
+# check president names
 speech_sentiments$president_name <- tolower(speech_sentiments$president_name)
-first_100$president <- tolower(first_100$president)
+levels(as.factor(speech_sentiments$president_name))
 
 # Recode names
-speech_sentiments$president_name[speech_sentiments$president_name == 'donald j. trump'] <- 'donald trump'
 speech_sentiments$president_name[speech_sentiments$president_name == 'george bush'] <- 'george h. w. bush'
-speech_sentiments$president_name[speech_sentiments$president_name == 'william j. clinton'] <- 'bill clinton'
+
+monthly_approval$president <- tolower(monthly_approval$president)
+levels(as.factor(monthly_approval$president))
 
 # Confirm president names for join
 name_check <- speech_sentiments %>%
   select(president_name) %>%
-  full_join(first_100, by = c('president_name' = 'president'))
+  full_join(monthly_approval, by = c('president_name' = 'president')) %>%
+  select(president_name) %>%
+  distinct()
 
-# Plot sentiment vs. first 100 approval
-first_100_sentiment_approval <- speech_sentiments %>%
-  full_join(first_100, by = c('president_name' = 'president')) %>%
-  select(president_name, n, negative, positive, sentiment, negative_ratio, first_100_approval) %>%
-  filter(!is.na(first_100_approval)) %>%
-  filter(!is.na(sentiment))
+# Fix date & add year
+speech_sentiments$speech_date <- mdy(speech_sentiments$speech_date)
+speech_sentiments$speech_year <- year(speech_sentiments$speech_date)
 
-first_100_sentiment_approval %>%
-  ggplot(aes(x = first_100_approval, y = negative_ratio)) +
+# Add predictors columns
+speech_sentiments$negative_ratio <- speech_sentiments$negative / speech_sentiments$speech_diversity
+speech_sentiments$positive_ratio <- speech_sentiments$positive / speech_sentiments$speech_diversity
+
+# Create monthly sentiment dataframe
+monthly_sentiment <- speech_sentiments %>%
+  rename(president = president_name) %>%
+  select(president, speech_date, speech_year, negative, positive, sentiment, speech_diversity, negative_ratio, positive_ratio) %>%
+  group_by(president,
+           speech_year,
+           month = floor_date(speech_date, "month")) %>%
+  summarize(avg_negative = mean(negative),
+            avg_positive = mean(positive),
+            avg_sentiment = mean(sentiment),
+            avg_diversity = mean(speech_diversity),
+            avg_negative_ratio = mean(negative_ratio),
+            avg_positive_ratio = mean(positive_ratio))
+
+# ------ 
+# Filtering within presidential term limits
+# -----
+# Add president terms to filter data within those terms
+presidents$end_date <- mdy(presidents$end_date)
+# Modify dataframe to handle presidents with non-consecutive terms
+presidents <- presidents %>%
+  select(president, start_date, end_date) %>%
+  group_by(president) %>%
+  summarise(start_date = min(start_date),
+            end_date = max(end_date))
+
+presidents$president <- tolower(presidents$president)
+name_check <- presidents
+name_check$presidents_df_name <- name_check$president 
+name_check <- name_check %>%
+  select(president, presidents_df_name)
+
+name_check_sentiment_df <- monthly_sentiment %>%
+  ungroup() %>%
+  select(president) %>%
+  distinct()
+name_check_sentiment_df$sentiment_df_name <- name_check_sentiment_df$president
+
+# All names match for join
+name_check <- name_check %>%
+  left_join(name_check_sentiment_df, by = c('president' = 'president'))
+
+# Make sure data is within presidential terms
+monthly_sentiment <- monthly_sentiment %>%
+  left_join(presidents, by = c('president' = 'president')) %>%
+  mutate(start_date = floor_date(start_date, "month"),
+         end_date = floor_date(end_date, "month")) %>%
+  filter(month >= start_date) %>%
+  filter(month <= end_date)
+
+# ------- 
+# Finishing visualization of monthly sentiment
+# -----
+monthly_sentiment %>%
+  ggplot(aes(x = month, y = avg_sentiment, color = president)) +
+  geom_line() +
+  facet_wrap(~ president, scales = "free") +
+  theme(legend.position="none") +
+  labs(x = 'Date', y = 'Average Sentiment')
+
+
+# --------------------------------------------------------------------------------------------------
+# Sentiment vs. Approval modeling
+# --------------------------------------------------------------------------------------------------
+
+sentiment_vs_approval <- monthly_sentiment %>%
+  full_join(monthly_approval, by = c('president' = 'president', 'speech_year' = 'start_year', 'month' = 'month')) %>%
+  filter(!is.na(avg_approval)) %>%
+  filter(!is.na(avg_sentiment))
+
+# Find outliers in approval & sentiment
+boxplot(sentiment_vs_approval$avg_approval) # Looks fine except for 1 value, probably not an outlier
+boxplot(sentiment_vs_approval$avg_sentiment) # Looks like there a few outliers, but only going to filter the extreme outliers over 80
+sentiment_vs_approval <- sentiment_vs_approval %>% filter(avg_sentiment < 80)
+
+# Plot approval vs. sentiment
+sentiment_vs_approval %>%
+  ggplot(aes(x = avg_approval, y = avg_sentiment)) +
   geom_point(size = 2) +
-  geom_smooth(method=lm) +
-  geom_text(aes(label = president_name)) +
-  labs(x = 'First 100 Days Average Approval', 
-       y = 'Inaugural Speech Sentiment', 
-       title = 'Inaugural Speech Sentiment vs. First 100 Days Approval Rating')
+  geom_smooth(method="auto") +
+  labs(x = 'Monthly Average Approval Rating', 
+       y = 'Monthly Average Speech Sentiment', 
+       title = 'Monthly Speech Sentiment vs. Approval Rating')
 
-first_100_lm <- lm(first_100_approval ~ negative_ratio, data = first_100_sentiment_approval)
-summary(first_100_lm)
+# Taking a look at a linear regressio model output fit to all of the data
+all_speeches_approval_lm <- lm(avg_approval ~ avg_negative_ratio  + avg_diversity + avg_sentiment, data = sentiment_vs_approval)
+summary(all_speeches_approval_lm) # very weak rSquared at about 3%
+
+# Based on the output from the plot above, there is a different relationship between sentiment and approval rating in different parts of the data
+# Below I am going to loop through approval rating to find the strongest rSquared, which I will then compare to the rsquared for all of the data
+
+rSquared <- 0.0
+for (i in seq(0.3, 1, by = 0.01)) {
+  
+  # filter dataframe by approval rate
+  filtered_lm_df <- sentiment_vs_approval %>%
+    filter(avg_approval <= i)
+  
+  # Fit model
+  all_speeches_approval_lm <- lm(avg_approval ~ avg_negative_ratio  + avg_diversity + avg_sentiment, data = filtered_lm_df)
+  
+  # Extract rSquared if higher than previous value
+  if (!is.na(summary(all_speeches_approval_lm)$r.squared) & summary(all_speeches_approval_lm)$r.squared > rSquared) {
+    rSquared <- summary(all_speeches_approval_lm)$r.squared
+    approval_threshold <- i
+  }
+}
+print(rSquared)
+print(approval_threshold)
+
+# Linear regression to explain avg approval based on avg sentiment
+filtered_lm_df <- sentiment_vs_approval %>%
+  filter(avg_approval < approval_threshold)
+
+# Linear regression modeling approval by sentiment scores
+all_speeches_approval_lm1 <- lm(avg_approval ~ avg_negative_ratio  + avg_diversity + avg_sentiment, data = filtered_lm_df)
+summary(all_speeches_approval_lm1)
+all_speeches_approval_lm2 <- lm(avg_approval ~ avg_diversity , data = filtered_lm_df)
+summary(all_speeches_approval_lm2)
+all_speeches_approval_lm3 <- lm(avg_approval ~ avg_negative_ratio, data = filtered_lm_df)
+summary(all_speeches_approval_lm3)
+all_speeches_approval_lm4 <- lm(avg_approval ~ avg_sentiment, data = filtered_lm_df)
+summary(all_speeches_approval_lm4)
+
+
+# -----------------------------------------------------------------------------
+#  Decision Tree and Random Forest Regression Modeling
+# -----------------------------------------------------------------------------
+
+# Because we found that there is a different relationship between approval ratings and sentiment in different ranges of the data,
+# the next step is to fit a decision tree to see where there may be different relationship strengths
+
+# Classification Tree with rpart
+library(rpart)
+library(rpart.plot)
+
+# grow tree 
+tree1 <- rpart(avg_approval ~ avg_negative_ratio  + avg_diversity + avg_sentiment, method="anova", data=sentiment_vs_approval)
+#tree1 <- rpart(avg_sentiment ~ avg_approval, method="anova", data=sentiment_vs_approval)
+
+printcp(tree1) # display the results 
+plotcp(tree1) # visualize cross-validation results 
+summary(tree1) # detailed summary of splits
+
+# create additional plots 
+par(mfrow=c(1,2)) # two plots on one page 
+rsq.rpart(tree1) # visualize cross-validation results   
+
+# plot tree 
+par(mfrow=c(1,1))
+plot(tree1, uniform=TRUE, 
+     main="Regression Tree for Sentiment vs. Approval")
+text(tree1, use.n=TRUE, all=TRUE, cex=.8)
+
+par(mfrow=c(1,1))
+rpart.plot(tree1)
+
+# Random Forest prediction of Kyphosis data
+library(randomForest)
+set.seed(17)
+fit <- randomForest(avg_approval ~ avg_negative_ratio  + avg_diversity + avg_sentiment, data=sentiment_vs_approval)
+print(fit) # view results 
+importance(fit) # importance of each predictor
+
+
+
