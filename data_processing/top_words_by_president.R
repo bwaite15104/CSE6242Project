@@ -40,7 +40,7 @@ count(president_name, word) %>%
 rename(word_count = n) %>%
 arrange(president_name, desc(word_count)) %>%
 group_by(president_name) %>%
-filter(row_number() <= 20)
+filter(row_number() <= 15)
 
 # write csv
 write.csv(speech_words, 'data/top_20_words_by_president.csv')

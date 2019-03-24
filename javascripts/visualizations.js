@@ -159,10 +159,22 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
         svg5.append("text")
         	.attr("class", "bar-text")
             .attr("text-anchor", "start")
-            .attr("x", -padding1*4)
+            .attr("x", -padding1*4.5)
             .attr("y", -padding1*1.3)
             .text("Top Words Used in Speech");
 
+    	// add commas function
+    	var addCommas = function(number) {
+			return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			};
+
+    	// add text annotation to bars
+    	bars.append("text")
+    		.attr("class", "label")
+    		.attr("y", function(d) {return yScale(d.word) + yScale.bandwidth() / 2 + 4;})
+    		.attr("x", function(d) {return xScale(d.word_count) - padding1*2;})
+    		.style("fill", "#fff")
+    		.text(function(d) {return addCommas(d.word_count);});
 
     	// mouseover function
     	bars.on("mouseover", function() {
@@ -189,12 +201,12 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	/////////////////////////////////////////////////
 
 	// set margins and padding
-	var margin2 = {top: 20, right: 20, bottom: 20, left: 20},
+	var margin2 = {top: 10, right: 20, bottom: 20, left: 10},
     	width2 = 500 - margin2.left - margin2.right,
     	height2 = 500 - margin2.top - margin2.bottom,
     	padding2 = 20,
-    	outerRadius = width2 / 2.5,
-    	innerRadius = width2/3.3;
+    	outerRadius = width2 / 2.8,
+    	innerRadius = width2/3.6;
 
     // initialize pie
     var pie = d3.pie()
@@ -235,8 +247,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.append("svg")
 	    	.attr("preserveAspectRatio", "xMinYMin meet")
 	    	.attr("viewBox", "0 0 500 500")
-	    	//.attr("width", width2 + margin2.left + margin2.right)
-	        //.attr("height", height2 + margin2.top + margin2.bottom)
 	        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
 	    // set up groups
@@ -245,7 +255,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.enter()
 	    	.append("g")
 	    	.attr("class", "arc")
-	    	.attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")");
+	    	.attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")");
 
 	    // draw arc paths
 	    arcs.append("path")
@@ -268,12 +278,11 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    // add title
 	    svg6.append("text")
-	        .attr("text-anchor", "center")
-	        .attr("x", margin2.left *4)
-	        .attr("y", padding2)
-	        .text("Topics Discussed in Speech")
-	        .style("font-size", "24px")
-	        .style("font-weight", 1000);
+	    	.attr("class", "donut-text")
+	        .attr("text-anchor", "start")
+	        .attr("x", -(padding2*.1))
+	        .attr("y", padding2*1.2)
+	        .text("Topics Discussed in Speech");
 
 	    // add tooltip
 	    arcs.call(pieToolTip);
@@ -286,7 +295,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	        svg6.append('text')
 	            .attr('class', 'toolCircle')
-	            .attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")")
+	            .attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")")
 	            .html(function() {	
 
 				    // return tip values
@@ -298,10 +307,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	        svg6.append('circle')
 	            .attr('class', 'toolCircle')
-				.attr("transform", "translate(" + outerRadius*1.3 + ", " + outerRadius*1.3 + ")")
+				.attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")")
 	            .attr('r', innerRadius *.9) 
 	            .style('fill', color(data.data.index)) // colour based on category mouse is over
-	            .style('fill-opacity', 0.35);
+	            .style('fill-opacity', 0.75);
 
 	    	});
 

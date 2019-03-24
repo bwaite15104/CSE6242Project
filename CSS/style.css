@@ -211,7 +211,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 
 /* selector positioning */
 #selector {
-  	padding: 15px 0px 0px 30px;
+  	padding: 15px 0px 0px 18px;
   	position: relative;
   	font-family: sans-serif;
   }
@@ -266,3 +266,18 @@ padding: 7.5px 7.5px 7.5px 7.5px;
         fill: none;
         display: none;
     }
+
+    .label {
+        font-size: .75rem;
+        color: #fff;
+        font-weight: 700;
+        font-family: sans-serif;
+    }
+
+	.donut-text {
+		font-size: 1.5rem;
+		font-family: sans-serif;
+		color: #383838;
+		padding: 0px 0px 0px 15px;
+		margin: 2.5px 0px 2.5px 0px;
+	}
