@@ -128,8 +128,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    // add svg element
 	    var svg5 = d3.select("#chart5")
 	    	.append("svg")
-	    	.attr("width", width1 + margin1.left + margin1.right)
-	        .attr("height", height1 + margin1.top + margin1.bottom)
+	    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    	.attr("viewBox", "0 0 500 500")
+	    	//.attr("width", width1 + margin1.left + margin1.right)
+	        //.attr("height", height1 + margin1.top + margin1.bottom)
 	        .append("g")
 	        .attr("transform", "translate(" + margin1.left + "," + margin1.top + ")");
 
@@ -232,8 +234,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    // add svg element
 	    var svg6 = d3.select("#chart6")
 	    	.append("svg")
-	    	.attr("width", width2 + margin2.left + margin2.right)
-	        .attr("height", height2 + margin2.top + margin2.bottom)
+	    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    	.attr("viewBox", "0 0 500 500")
+	    	//.attr("width", width2 + margin2.left + margin2.right)
+	        //.attr("height", height2 + margin2.top + margin2.bottom)
 	        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
 	    // set up groups
