@@ -73,7 +73,7 @@ padding: 0px 30px 30px 30px;
 }
 
 #chart1-container {
-	background-color: #fff;
+	background-color: #33adff;
 	margin-right: 15px;
 	margin-left: 15px;
 	width: 100%;
@@ -90,7 +90,7 @@ padding: 0px 30px 30px 30px;
 
 
 #chart2-container {
-	background-color: #fff;
+	background-color: #33adff;
 	margin-right: 15px;
 	margin-left: 15px;
 	width: 100%;
@@ -106,7 +106,7 @@ padding: 0px 30px 30px 30px;
 }
 
 #chart3-container {
-	background-color: #fff;
+	background-color: #33adff;
 	margin-right: 15px;
 	margin-left: 15px;
 	width: 100%;
@@ -123,7 +123,7 @@ padding: 0px 30px 30px 30px;
 
 
 #chart4-container {
-	background-color: #fff;
+	background-color: #33adff;
 	margin-right: 15px;
 	margin-left: 15px;
 	width: 100%;
@@ -174,21 +174,6 @@ padding: 0px 30px 30px 30px;
 	max-width: 50%;
 }
 
-
-.bar{
-	fill: #4670ad;
-	}
-
-	.bar:hover{
-	fill: brown;
-	}
-
-	.line {
-		fill: none;
-		stroke: steelblue;
-		stroke-width: 2px;
-	}
-
 	.axis-style {
 		font-size: 11px;
     font-family: sans-serif;
@@ -209,14 +194,14 @@ padding: 0px 30px 30px 30px;
 	.summary-text-top {
 		font-size: 1.1vw;
 		font-weight: 400;
-		color: #8c8e90;
+		color: #fff;
 		font-family: sans-serif;
 		text-align: center;
 	}
 
 	.summary-text-sub {
 		font-size: .8rem;
-		color: #8c8e90;
+		color: #fff;
 		text-align: center;
 	}
 
@@ -239,7 +224,7 @@ padding: 0px 30px 30px 30px;
   	-moz-appearance: none;
   	appearance: none;
 }
-
+/*
 #selector:after {
   content: '>';
   font: 20px "Consolas", monospace;
@@ -255,4 +240,4 @@ padding: 0px 30px 30px 30px;
   position: absolute;
   pointer-events: none;
 }
-
+*/

@@ -45,7 +45,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.speech_diversity*10) / 10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle");
+				.attr("text-anchor", "middle")
+				.style("color", "#fff");
 
 			// chart 2 - negative words
 			var word_diversity = svg2.selectAll(".negative")
@@ -54,7 +55,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.negative*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle");
+				.attr("text-anchor", "middle")
+				.style("color", "#fff");
 
 			// chart 3 - positive words
 			var word_diversity = svg3.selectAll(".positive")
@@ -63,7 +65,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.positive*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle");
+				.attr("text-anchor", "middle")
+				.style("color", "#fff");
 
 			// chart 2 - sentiment score
 			var word_diversity = svg4.selectAll(".sentiment")
@@ -72,7 +75,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.sentiment*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle");
+				.attr("text-anchor", "middle")
+				.style("color", "#fff");
 
 	};
 
@@ -142,7 +146,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 			.attr("height", yScale.bandwidth())
 			.attr("x", 0)
 			.attr("width", function(d) {return xScale(d.word_count);})
-			.style("fill", "#FF8C00");
+			.style("fill", "#4db8ff");
 
 		// add y axis
 		svg5.append("g")
@@ -171,7 +175,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     	bars.on("mouseout", function() {
     		d3.select(this)
     		.select("rect")
-    			.style("fill", "#FF8C00");
+    			.style("fill", "#4db8ff");
 
     	}); 
 
@@ -201,7 +205,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     	.outerRadius(outerRadius);
 
     // set up 10 color ordinal
-    var color = d3.scaleOrdinal(d3.schemeSet3);
+    var color = d3.scaleOrdinal(d3.schemeBlues[5]);
 
 	// format data
 	presidential_topics.forEach(function(d) {
@@ -256,6 +260,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    		return Math.floor((topics_filtered[i].topic_percent / 1) * 100) + '%';
 	    		}	
 	    	})
+	    	.style("fill", "#fff")
+	    	.style("font-weight", 1000);
 
 	    // add title
 	    svg6.append("text")
