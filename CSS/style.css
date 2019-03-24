@@ -1,226 +1,259 @@
 
-	/* The sidebar menu */
-	.sidenav {
-	  height: 100%; /* Full-height: remove this if you want "auto" height */
-	  width: 240px; /* Set the width of the sidebar */
-	  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-	  top: 0; /* Stay at the top */	
-	  left: 0;
-	  background-color: #323f51; /* Black */
-	  overflow-x: hidden; /* Disable horizontal scroll */
-	  padding-top: 75px;
-	}
+/* The sidebar menu */
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 240px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  top: 0; /* Stay at the top */	
+  left: 0;
+  background-color: #323f51; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 75px;
+}
 
-	/* The navigation menu links */
-	.sidenav a {
-	  padding: 10px 20px 10px 20px;
-	  text-decoration: none;
-	  font-size: 25px;
-	  color: #818181;
-	  display: block;
-	  font-size: .99rem;
-	  font-family: Lato, sans-serif;
-	}
+/* The navigation menu links */
+.sidenav a {
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  font-size: .99rem;
+  font-family: Lato, sans-serif;
+}
 
-	/* When you mouse over the navigation links, change their color */
-	.sidenav a:hover {
-	  color: #f1f1f1;
-	}
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
 
 
-	body {
-		margin-left: 240px;
-		margin-top: 75px;
-		background-color: #edf2f6;
-	}
+body {
+	margin-left: 240px;
+	margin-top: 75px;
+	background-color: #edf2f6;
+}
 
-	.chart-row-1 {
-		display: flex;
-		padding: 30px 30px 30px 30px;
-	}
-
-	.chart-row-2 {
+.chart-row-1 {
 	display: flex;
-	padding: 0px 30px 30px 30px;
+	padding: 30px 30px 30px 30px;
+}
+
+.chart-row-2 {
+display: flex;
+padding: 0px 30px 30px 30px;
+}
+
+.header {
+	position: fixed;
+	width: 100%;
+	height: 70px;
+	background-color: #4670ad!important;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+.header p {
+	padding-left: 20px;
+	font-size: 1.5rem;
+	font-weight: 400;
+	font-family: lato, sans-serif;
+	color: #fff;
+	text-align: left;
+}
+
+.headline-text {
+	font-weight: 400;
+	font-size: 20px;
+	color: #8c8e90;
+	padding-top: 25px;
+	margin-left: 30px;
+	font-family: lato, sans-serif;
+}
+
+#chart1-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart0-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+
+#chart2-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart1-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+#chart3-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart2-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+
+#chart4-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart3-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+
+
+#chart5-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart4-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+
+
+#chart6-container {
+	background-color: #fff;
+	margin-right: 15px;
+	margin-left: 15px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart5-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+
+.bar{
+	fill: #4670ad;
 	}
 
-	.header {
-		position: fixed;
-		width: 100%;
-		height: 70px;
-		background-color: #4670ad!important;
-		top: 0;
-		left: 0;
-		z-index: 1;
+	.bar:hover{
+	fill: brown;
 	}
 
-	.header p {
-		padding-left: 20px;
-		font-size: 1.5rem;
+	.line {
+		fill: none;
+		stroke: steelblue;
+		stroke-width: 2px;
+	}
+
+	.axis-style {
+		font-size: 11px;
+    font-family: sans-serif;
+    fill: #8c8e90;
+	}
+
+	.summary-text-num {
+		font-size: 2.5rem;
+		font-family: sans-serif;
 		font-weight: 400;
-		font-family: lato, sans-serif;
-		color: #fff;
-		text-align: left;
+		text-align: center;
+		font-color: #383838;
+		margin: 0px 0px 0px 0px;
+		padding: 0px 0px 30px 0px;
+
 	}
 
-	.headline-text {
+	.summary-text-top {
+		font-size: 1.1vw;
 		font-weight: 400;
-		font-size: 20px;
 		color: #8c8e90;
-		padding-top: 25px;
-		margin-left: 30px;
-		font-family: lato, sans-serif;
+		font-family: sans-serif;
+		text-align: center;
 	}
 
-	#chart1-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
+	.summary-text-sub {
+		font-size: .8rem;
+		color: #8c8e90;
+		text-align: center;
 	}
 
-	@media (min-width: 992px)
-	#chart0-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
+/* selector positioning */
+#selector {
+  	padding: 15px 0px 0px 30px;
+  	position: relative;
+  	font-family: arial;
+  	width: 200px;
+  }
 
+/* style the options in select menu */
+#selector select {
+	background-color: DodgerBlue;
+	color: #ffffff;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+	cursor: pointer;
+	-webkit-appearance: none;
+  	-moz-appearance: none;
+  	appearance: none;
+}
 
-	#chart2-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
+#selector:after {
+  content: '>';
+  font: 20px "Consolas", monospace;
+  background-color: DodgerBlue;
+  color: #ffffff;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  left: 210px;
+  top: 20px;
+  padding: 0 0 2px;
+  position: absolute;
+  pointer-events: none;
+}
 
-	@media (min-width: 992px)
-	#chart1-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-	#chart3-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
-
-	@media (min-width: 992px)
-	#chart2-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-
-	#chart4-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
-
-	@media (min-width: 992px)
-	#chart3-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-
-
-	#chart5-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
-
-	@media (min-width: 992px)
-	#chart4-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-
-
-	#chart6-container {
-		background-color: #fff;
-		margin-right: 15px;
-		margin-left: 15px;
-		width: 100%;
-		border-radius: 5px;
-	}
-
-	@media (min-width: 992px)
-	#chart5-container {
-		flex-grow: 0;
-		flex-shrink: 0;
-		flex-basis: 50%;
-		max-width: 50%;
-	}
-
-	
-	.bar{
-    	fill: #4670ad;
-  	}
-
-  	.bar:hover{
-    	fill: brown;
-  	}
-
-  	.line {
-  		fill: none;
-  		stroke: steelblue;
-  		stroke-width: 2px;
-  	}
-
-  	.axis-style {
-  		font-size: 11px;
-        font-family: sans-serif;
-        fill: #8c8e90;
-  	}
-
-  	.summary-text-num {
-  		font-size: 2.5rem;
-  		font-family: sans-serif;
-  		font-weight: 400;
-  		text-align: center;
-  		font-color: #383838;
-  		margin: 0px 0px 0px 0px;
-  		padding: 0px 0px 30px 0px;
-
-  	}
-
-  	.summary-text-top {
-  		font-size: 1.1vw;
-  		font-weight: 400;
-  		color: #8c8e90;
-  		font-family: sans-serif;
-  		text-align: center;
-  	}
-
-  	.summary-text-sub {
-  		font-size: .8rem;
-  		color: #8c8e90;
-  		text-align: center;
-  	}
-
-	#selector {
-	  	padding: 15px 0px 0px 30px;
-
-	  }
