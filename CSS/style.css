@@ -225,7 +225,6 @@ padding: 0px 30px 30px 30px;
   	padding: 15px 0px 0px 30px;
   	position: relative;
   	font-family: arial;
-  	width: 200px;
   }
 
 /* style the options in select menu */
@@ -250,7 +249,7 @@ padding: 0px 30px 30px 30px;
   -moz-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
-  left: 210px;
+  left: 200px;
   top: 20px;
   padding: 0 0 2px;
   position: absolute;
