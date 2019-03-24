@@ -43,7 +43,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.data(data_filtered)
 				.enter()
 				.append("p")
-				.text(function(d) {return d.speech_diversity;})
+				.text(function(d) {return Math.round(d.speech_diversity*10) / 10;})
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "middle");
 
@@ -52,7 +52,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.data(data_filtered)
 				.enter()
 				.append("p")
-				.text(function(d) {return d.negative;})
+				.text(function(d) {return Math.round(d.negative*10)/10;})
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "middle");
 
@@ -61,7 +61,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.data(data_filtered)
 				.enter()
 				.append("p")
-				.text(function(d) {return d.positive;})
+				.text(function(d) {return Math.round(d.positive*10)/10;})
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "middle");
 
@@ -70,7 +70,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.data(data_filtered)
 				.enter()
 				.append("p")
-				.text(function(d) {return d.sentiment;})
+				.text(function(d) {return Math.round(d.sentiment*10)/10;})
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "middle");
 
