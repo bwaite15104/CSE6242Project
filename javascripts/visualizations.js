@@ -45,8 +45,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.speech_diversity*10) / 10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle")
-				.style("color", "#fff");
+				.attr("text-anchor", "left")
+				.style("color", "#33adff");
 
 			// chart 2 - negative words
 			var word_diversity = svg2.selectAll(".negative")
@@ -55,8 +55,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.negative*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle")
-				.style("color", "#fff");
+				.attr("text-anchor", "left")
+				.style("color", "#33adff");
 
 			// chart 3 - positive words
 			var word_diversity = svg3.selectAll(".positive")
@@ -65,8 +65,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.positive*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle")
-				.style("color", "#fff");
+				.attr("text-anchor", "left")
+				.style("color", "#33adff");
 
 			// chart 2 - sentiment score
 			var word_diversity = svg4.selectAll(".sentiment")
@@ -75,8 +75,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.append("p")
 				.text(function(d) {return Math.round(d.sentiment*10)/10;})
 				.attr("class", "summary-text-num")
-				.attr("text-anchor", "middle")
-				.style("color", "#fff");
+				.attr("text-anchor", "left")
+				.style("color", "#33adff");
 
 	};
 
@@ -130,8 +130,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.append("svg")
 	    	.attr("preserveAspectRatio", "xMinYMin meet")
 	    	.attr("viewBox", "0 0 500 500")
-	    	//.attr("width", width1 + margin1.left + margin1.right)
-	        //.attr("height", height1 + margin1.top + margin1.bottom)
 	        .append("g")
 	        .attr("transform", "translate(" + margin1.left + "," + margin1.top + ")");
 
@@ -153,16 +151,17 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// add y axis
 		svg5.append("g")
 			.attr("class", "axis")
-			.call(yAxis);
+			.call(yAxis)
+			.style("text-anchor", "start")
+			.attr("transform", "translate(" + -padding1*4 + ", 0)");
 
-        // add map title
+        // add title
         svg5.append("text")
-            .attr("text-anchor", "center")
-            .attr("x", width1 / 8)
-            .attr("y", -10)
-            .text("Top Words Used in Speech")
-            .style("font-size", "24px")
-            .style("font-weight", 1000);
+        	.attr("class", "bar-text")
+            .attr("text-anchor", "start")
+            .attr("x", -padding1*4)
+            .attr("y", -padding1*1.3)
+            .text("Top Words Used in Speech");
 
 
     	// mouseover function
