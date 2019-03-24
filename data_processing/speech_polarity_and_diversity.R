@@ -40,7 +40,7 @@ bing <- get_sentiments("bing")
 
 speech_polarity_sentiment <- speech_words %>%
 inner_join(bing) %>%
-select(-word) %>%
+select(-word) %>%	
 count(president_name, speech_date, speech_type, sentiment) %>%
 spread(sentiment, n) 
 
@@ -52,24 +52,24 @@ mutate(sentiment = positive - negative)
 
 # get speech diversity
 speech_diversity <- speech_words %>%
-select(president_name, word) %>%
+select(president_name, speech_date, speech_type, word) %>%
 distinct() %>%
-select(president_name) %>%
-count(president_name) %>%
+select(-word) %>%
+count(president_name, speech_date, speech_type) %>%
 rename(speech_diversity = n)
 
 # join dataframes for complete set
 speech_data_clean <- speech_polarity_sentiment %>%
-left_join(speech_diversity, by="president_name")
+left_join(speech_diversity, by=c("president_name", "speech_date", "speech_type"))
 
 # summarize data for visualition
 speech_data_summarize <- speech_data_clean %>%
-select(president_name, negative, positive) %>%
+select(president_name, negative, positive, speech_diversity) %>%
 group_by(president_name) %>%
-summarize(negative = sum(negative),
-		positive = sum(positive)) %>%
-mutate(sentiment = positive - negative) %>%
-left_join(speech_diversity, by="president_name")
+summarize(negative = mean(negative),
+		positive = mean(positive),
+		speech_diversity = mean(speech_diversity)) %>%
+mutate(sentiment = positive - negative)
 
 # write csv
 write.csv(speech_data_clean, 'data/speech_polarity_for_model.csv')
