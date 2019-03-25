@@ -281,3 +281,11 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 		padding: 0px 0px 0px 15px;
 		margin: 2.5px 0px 2.5px 0px;
 	}
+
+	.toolCircle {
+		font-size: .9rem;
+		font-family: sans-serif;
+		color: #383838;
+		padding: 0px 0px 0px 15px;
+		margin: 2.5px 0px 2.5px 0px;
+	}

@@ -241,7 +241,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 			return d.president_name==name;
 		})
 
-
 	    // add svg element
 	    var svg6 = d3.select("#chart6")
 	    	.append("svg")
@@ -255,11 +254,11 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.enter()
 	    	.append("g")
 	    	.attr("class", "arc")
-	    	.attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")");
+	    	.attr("transform", "translate(" + outerRadius*1.45 + ", " + outerRadius*1.6 + ")");
 
 	    // draw arc paths
 	    arcs.append("path")
-	    	.attr("fill", function(d, i) {return color(i);})
+	    	.attr("fill", function(d) {return color(d.index);})
 	    	.attr("d", arc);
 
 	    // add text labels for wedges
@@ -295,22 +294,22 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	        svg6.append('text')
 	            .attr('class', 'toolCircle')
-	            .attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")")
+	            .attr("transform", "translate(" + outerRadius*1.45 + ", " + outerRadius*1.6 + ")")
 	            .html(function() {	
 
 				    // return tip values
 				    return Math.floor((data.data.topic_percent / 1) * 100) + "% Focus On " + data.data.topic;
 
 	        	})
-	            .style('font-size', '.9em')
 	            .style('text-anchor', 'middle'); // centres text in tooltip
+   
 
 	        svg6.append('circle')
 	            .attr('class', 'toolCircle')
-				.attr("transform", "translate(" + outerRadius*1.1 + ", " + outerRadius*1.5 + ")")
-	            .attr('r', innerRadius *.9) 
-	            .style('fill', color(data.data.index)) // colour based on category mouse is over
-	            .style('fill-opacity', 0.75);
+				.attr("transform", "translate(" + outerRadius*1.45 + ", " + outerRadius*1.6 + ")")
+	            .attr('r', innerRadius *.95) 
+	            .style('fill', color(data.index)) // colour based on category mouse is over
+	            .style('fill-opacity', 0.7);
 
 	    	});
 
