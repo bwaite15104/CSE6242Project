@@ -142,10 +142,11 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
 
-		  // Scale the range of the data
+		 // Scale the range of the data
 	  	x.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.month; }));
-	  	y0.domain([0, d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_sentiment);})]);
-	  	y1.domain([0, d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_approval); })]);
+	  	y0.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.avg_sentiment; }));
+	  	//y0.domain([d3.min(monthly_time_series_filtered, function(d) { return Math.min(d.avg_sentiment);}), d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_sentiment);}) ]);
+	  	y1.domain([0, 1]);
 
 	  	  // Add the valueline path.
 	  	svg.append("path")
