@@ -180,5 +180,6 @@ dualplot(x1 = test$month, y1 = test$avg_sentiment,
          legx = "topright", 
          main = "Monthly Time Series Avg Sentiment vs. Avg Approval (Barack obama)")
 
+sentiment_vs_approval$president <- toupper(sentiment_vs_approval$president)
 write.csv(sentiment_vs_approval, 'monthly_time_series_viz_data_approvals.csv')
 

@@ -187,6 +187,12 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	border-radius: 5px;
 }
 
+#chart7 .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
 @media (min-width: 992px)
 #chart5-container {
 	flex-grow: 0;

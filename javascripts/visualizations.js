@@ -9,12 +9,13 @@
 var promises = [
   d3.csv("data/speech_polarity_and_diversity.csv"),
   d3.csv("data/top_20_words_by_president.csv"),
-  d3.csv("data/presidential_topics.csv")
+  d3.csv("data/presidential_topics.csv"),
+  d3.csv("data/monthly_time_series_viz_data_approvals.csv")
 ]
 
 Promise.all(promises).then(ready)
 
-function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics]) {
+function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics, monthly_time_series_viz_data_approvals]) {
 
 
 	// initailize charts			
@@ -79,6 +80,104 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				.style("color", "#33adff");
 
 	};
+
+	////////////////////////////////////////////////
+	//   Monthly Time Series: Approval vs. Sentiment
+	/////////////////////////////////////////////////
+
+	// Create parse data format
+	var format = d3.timeParse("%Y-%m-%d");
+	//format.parse("2011-01-01"); // returns a Date
+
+	// format data
+	monthly_time_series_viz_data_approvals.forEach(function(d) {
+		d.president = d.president;
+		d.speech_year = +d.speech_year;
+		d.month = format(d.month);
+		d.avg_sentiment = +d.avg_sentiment
+		d.avg_approval = +d.avg_approval;
+	});
+
+	var monthlyTimeSeries1 = function(name) {
+
+		/*
+		// Filter data for development purposes, remove when done
+		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
+			return d.president == 'barack obama';
+		})
+		*/
+		// Filter data for development purposes, remove when done
+		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
+			return d.president == name;
+		})
+
+		// set margins and padding
+		var margin = {top: 60, right: 30, bottom: 20, left: 75},
+	    	width = 500 - margin.left - margin.right,
+	    	height = 500 - margin.top - margin.bottom,
+	    	padding = 20;
+
+	    // set the ranges
+		var x = d3.scaleTime().range([0, width]);
+		var y0 = d3.scaleLinear().range([height, 0]);
+		var y1 = d3.scaleLinear().range([height, 0]);
+
+		// define the 1st line
+		var valueline = d3.line()
+		    .x(function(d) { return x(d.month); })
+		    .y(function(d) { return y0(d.avg_sentiment); });
+
+		// define the 2nd line
+		var valueline2 = d3.line()
+		    .x(function(d) { return x(d.month); })
+		    .y(function(d) { return y1(d.avg_approval); });
+
+		// append the svg object to the body of the page
+		// appends a 'group' element to 'svg'
+		// moves the 'group' element to the top left margin
+		var svg = d3.select("#chart7").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform",
+		          "translate(" + margin.left + "," + margin.top + ")");
+
+		  // Scale the range of the data
+	  	x.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.month; }));
+	  	y0.domain([0, d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_sentiment);})]);
+	  	y1.domain([0, d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_approval); })]);
+
+	  	  // Add the valueline path.
+	  	svg.append("path")
+	    	.data([monthly_time_series_filtered])
+	      	.attr("class", "line")
+	      	.attr("d", valueline);
+
+	  	// Add the valueline2 path.
+	  	svg.append("path")
+      		.data([monthly_time_series_filtered])
+      		.attr("class", "line")
+      		.style("stroke", "red")
+      		.attr("d", valueline2);
+
+	  	// Add the X Axis
+	  	svg.append("g")
+	    	.attr("transform", "translate(0," + height + ")")
+	    	.call(d3.axisBottom(x));
+
+	  	// Add the Y0 Axis
+	  	svg.append("g")
+	    	.attr("class", "axisSteelBlue")
+	    	.call(d3.axisLeft(y0));
+
+	  	// Add the Y1 Axis
+	  	svg.append("g")
+	    	.attr("class", "axisRed")
+	    	.attr("transform", "translate( " + width + ", 0 )")
+	    	.call(d3.axisRight(y1));
+
+	};
+
 
 	/////////////////////////////////////////////////
 	//
@@ -347,6 +446,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     topline_metrics_charts(presidents[0]);
     barViz(presidents[0]);
     donutViz(presidents[0]);
+    monthlyTimeSeries1(presidents[0]);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
@@ -371,10 +471,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		d3.selectAll("#chart4").selectAll("p").remove();
 		d3.selectAll("#chart5").selectAll("svg").remove();
 		d3.selectAll("#chart6").selectAll("svg").remove();
+		d3.selectAll("#chart7").selectAll("svg").remove();
 
     	topline_metrics_charts(selection);
     	barViz(selection);
-    	donutViz(selection);});
+    	donutViz(selection);
+    	monthlyTimeSeries1(selection);
+    });
 
 };
 
