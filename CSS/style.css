@@ -44,6 +44,11 @@ display: flex;
 padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
+.chart-row-3 {
+display: flex;
+padding: 7.5px 7.5px 7.5px 7.5px;
+}
+
 .header {
 	position: fixed;
 	width: 100%;
@@ -159,6 +164,38 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 
 
 #chart6-container {
+	background-color: #fff;
+	margin-right: 7.5px;
+	margin-left: 7.5px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart5-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+#chart7-container {
+	background-color: #fff;
+	margin-right: 7.5px;
+	margin-left: 7.5px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart5-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
+
+#chart8-container {
 	background-color: #fff;
 	margin-right: 7.5px;
 	margin-left: 7.5px;
