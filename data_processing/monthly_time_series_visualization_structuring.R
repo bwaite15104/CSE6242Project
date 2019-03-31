@@ -122,6 +122,9 @@ name_check_sentiment_df$sentiment_df_name <- name_check_sentiment_df$president
 name_check <- name_check %>%
   left_join(name_check_sentiment_df, by = c('president' = 'president'))
 
+# Handle missing end date for trump because he's currently in office
+presidents$end_date[is.na(presidents$end_date)] <- Sys.Date()
+
 # Make sure data is within presidential terms
 monthly_sentiment <- monthly_sentiment %>%
   left_join(presidents, by = c('president' = 'president')) %>%
@@ -170,7 +173,7 @@ sentiment_vs_approval %>%
 
 # The dualplot() function:
 source("https://gist.githubusercontent.com/ellisp/4002241def4e2b360189e58c3f461b4a/raw/e959562be9e7a4d919a9c454d8b1b70cde904ab0/dualplot.R")     
-
+  
 
 test <- sentiment_vs_approval %>% filter(president == 'barack obama')
 
