@@ -263,17 +263,37 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    // add text labels for wedges
 	    arcs.append("text")
+	    	.attr("class", "donut-labels")
 	    	.attr("transform", function(d) {
-	    		return "translate(" + arc.centroid(d) + ")";
+	    		var pos = arc.centroid(d)
+
+	    		pos[0] = pos[0] * 1.4;
+	    		pos[1] = pos[1] * 1.4;
+	    		return "translate(" + pos + ")";
 	    	})
 	    	.attr("text-anchor", "middle")
 	    	.text(function(d, i) {
-	    		if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) > 4) {
-	    		return Math.floor((topics_filtered[i].topic_percent / 1) * 100) + '%';
+	    		if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) >= 2) {
+	    		return topics_filtered[i].topic  + ': ' + Math.floor((topics_filtered[i].topic_percent / 1) * 100) + '%';
 	    		}	
-	    	})
-	    	.style("fill", "#fff")
-	    	.style("font-weight", 1000);
+	    	});
+
+
+	    // add lines connecting labels to slice
+        var polyline = arcs.append("g")
+        	.attr("class", "lines")
+        	.selectAll('polyline')
+            .data(pie(topics_filtered))
+            .enter()
+            .append('polyline')
+            .attr('points', function(d, i) {
+            	if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) >= 2) {
+	                var pos = arc.centroid(d);
+		    		pos[0] = pos[0] * 1.27;
+		    		pos[1] = pos[1] * 1.3;
+	                return [arc.centroid(d), pos];
+	            }
+            });
 
 	    // add title
 	    svg6.append("text")

@@ -181,7 +181,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	}
 
 	.summary-text-num {
-		font-size: 3em;
+		font-size: 3.5vw;
 		font-family: sans-serif;
 		font-weight: 400;
 		text-align: left;
@@ -191,7 +191,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	}
 
 	.summary-text-top {
-		font-size: 1.5em;
+		font-size: 1.9vw;
 		font-weight: 400;
 		color: #383838;
 		font-family: sans-serif;
@@ -201,7 +201,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	}
 
 	.summary-text-sub {
-		font-size: 1.2em;
+		font-size: 1.2vw;
 		font-family: sans-serif;
 		color: #383838;
 		text-align: left;
@@ -227,24 +227,10 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	-webkit-appearance: none;
   	-moz-appearance: none;
   	appearance: none;
+  	border-radius: 5px;
+
 }
-/*
-#selector:after {
-  content: '>';
-  font: 20px "Consolas", monospace;
-  background-color: DodgerBlue;
-  color: #ffffff;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-  left: 200px;
-  top: 20px;
-  padding: 0 0 2px;
-  position: absolute;
-  pointer-events: none;
-}
-*/
+
 
 	.bar-text {
 		font-size: 1.5rem;
@@ -288,4 +274,19 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 		color: #383838;
 		padding: 0px 0px 0px 15px;
 		margin: 2.5px 0px 2.5px 0px;
+	}
+
+/*Styling for the lines connecting the labels to the slices*/
+polyline {
+    opacity: .3;
+    stroke: #383838;
+    stroke-width: 1px;
+    fill: none;
+
+}
+
+	.donut-labels {
+		font-size: .75rem;
+		font-family: sans-serif;
+		color: #383838;
 	}
