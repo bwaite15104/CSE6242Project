@@ -98,6 +98,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		d.avg_approval = +d.avg_approval;
 	});
 
+	console.log(monthly_time_series_viz_data_approvals);
+
 	var monthlyTimeSeries1 = function(name) {
 
 		/*
@@ -145,8 +147,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		 // Scale the range of the data
 	  	x.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.month; }));
 	  	y0.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.avg_sentiment; }));
-	  	//y0.domain([d3.min(monthly_time_series_filtered, function(d) { return Math.min(d.avg_sentiment);}), d3.max(monthly_time_series_filtered, function(d) {return Math.max(d.avg_sentiment);}) ]);
 	  	y1.domain([0, 1]);
+	  	//y1.domain([0, d3.max(monthly_time_series_filtered, function(d) { return Math.max(d.avg_approval); }) ]);
 
 	  	  // Add the valueline path.
 	  	svg.append("path")

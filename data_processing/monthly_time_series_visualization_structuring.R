@@ -41,7 +41,8 @@ monthly_approval <- df_approve %>%
   rename(president = President)
 
 # Recode names
-monthly_approval$president[monthly_approval$president == 'george h.w. bush'] <- 'george bush'
+monthly_approval$president[monthly_approval$president == 'George H.W. Bush'] <- 'george bush'
+monthly_approval$president[monthly_approval$president == 'Gerald R. Ford'] <- 'gerald ford'
 
 monthly_approval %>%
   ggplot(aes(x = month, y = avg_approval, color = president)) +
@@ -106,7 +107,6 @@ presidents <- presidents %>%
   summarise(start_date = min(start_date),
             end_date = max(end_date))
 
-presidents$president <- tolower(presidents$president)
 name_check <- presidents
 name_check$presidents_df_name <- name_check$president 
 name_check <- name_check %>%
@@ -169,6 +169,64 @@ sentiment_vs_approval %>%
   theme(legend.position="none") +
   labs(x = 'Date', y = 'Average Sentiment')
 
+# -----------------------------------------------------------------------
+#                          Impute Missing Data
+# ----------------------------------------------------------------------
+
+# order by president and date
+impute <- sentiment_vs_approval %>%
+  arrange(president, month)
+
+for (i in 1:nrow(impute)) {
+  print(i)
+  if (i == 1) {
+    impute$avg_approval[i] <- NA
+  } else if (i <= nrow(impute)) {
+    # Store presidents for comparison
+    prez <- impute$president[i]
+    prev_prez <- impute$president[i-1]
+    next_prez <- impute$president[i+1]
+    
+    # Store Approval ratings for comparison
+    approval <- impute$avg_approval[i]
+    prev_approval <- impute$avg_approval[i-1]
+    next_approval <- impute$avg_approval[i+1]
+    
+    # Test for NA value
+    if (is.na(approval)) {
+      # Handle case where first appearance of president
+      if (prev_prez != prez) {
+        impute$avg_approval[i] <- next_approval
+      } else if (prez == prev_prez & prez == next_prez) {
+        approve_sum <- 0
+        count <- 0
+        approve_mean <- NA
+        # Handle surrounding missing values
+        if (!is.na(prev_approval)) {
+          approve_sum <- approve_sum + prev_approval
+          count <- count + 1
+        }
+        if(!is.na(next_approval)) {
+          approve_sum <- approve_sum + next_approval
+          count <- count + 1
+        }
+        if(!is.na(approve_sum)) {
+          impute$avg_approval[i] <- approve_sum/count
+        } else {
+          impute$avg_approval[i] <- impute$avg_approval[i] 
+        }
+      } else if (prez != next_prez) {
+        impute$avg_approval[i] <- prev_approval
+      }
+    }
+  } else {
+    impute$avg_approval[i] <- impute$avg_approval[i-1]
+  }
+}
+
+# -----------------------------------------------------------------------
+#                     Write Data and Test Output
+# -----------------------------------------------------------------------
 # Test time series dual axis
 
 # The dualplot() function:
@@ -183,6 +241,9 @@ dualplot(x1 = test$month, y1 = test$avg_sentiment,
          legx = "topright", 
          main = "Monthly Time Series Avg Sentiment vs. Avg Approval (Barack obama)")
 
-sentiment_vs_approval$president <- toupper(sentiment_vs_approval$president)
-write.csv(sentiment_vs_approval, 'monthly_time_series_viz_data_approvals.csv')
+impute$president <- toupper(impute$president)
+# Fix NA values
+impute$avg_approval[is.na(impute$avg_approval)] <- NaN
+
+write.csv(impute, 'monthly_time_series_viz_data_approvals.csv')
 
