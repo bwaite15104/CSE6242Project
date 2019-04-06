@@ -610,10 +610,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 		// jquery multi selector
 		$(document).ready(function() {
+							// selector defaults
 						    var $multiselect = $('.multi-select').select2({
 						    	placeholder: 'Select President(s)',
 						    	width: '20%'
-						    	//maximumSelectionLength: 3
 						    });
 
 						    // add names and update visualizations
@@ -656,6 +656,46 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 						    	donutViz(selector_names);
 						    	monthlyTimeSeries1(selector_names);
 							});
+
+							// reset selector button
+							$("#reset").click(function() {
+								$('.multi-select').val(null).trigger('change');
+						    	// remove old value
+								d3.selectAll("#chart1").selectAll("p").remove();
+								d3.selectAll("#chart2").selectAll("p").remove();
+								d3.selectAll("#chart3").selectAll("p").remove();				
+								d3.selectAll("#chart4").selectAll("p").remove();
+								d3.selectAll("#chart5").selectAll("svg").remove();
+								d3.selectAll("#chart6").selectAll("svg").remove();
+								d3.selectAll("#chart7").selectAll("svg").remove();
+
+								// initialize selector
+							    topline_metrics_charts(selector_names_init);
+							    barViz(selector_names_init);
+							    donutViz(selector_names_init);
+								monthlyTimeSeries1(selector_names_init);
+							})
+
+							// select all selector button
+							$("#selectAll").click(function() {
+						    	var newOption = new Option("All Presidents", presidents, true, true);
+								$('.multi-select').append(newOption).trigger('change');
+
+						    	// remove old value
+								d3.selectAll("#chart1").selectAll("p").remove();
+								d3.selectAll("#chart2").selectAll("p").remove();
+								d3.selectAll("#chart3").selectAll("p").remove();				
+								d3.selectAll("#chart4").selectAll("p").remove();
+								d3.selectAll("#chart5").selectAll("svg").remove();
+								d3.selectAll("#chart6").selectAll("svg").remove();
+								d3.selectAll("#chart7").selectAll("svg").remove();
+
+								// initialize selector
+							    topline_metrics_charts(presidents);
+							    barViz(presidents);
+							    donutViz(presidents);
+								monthlyTimeSeries1(presidents);
+							})
 						});
 
 };

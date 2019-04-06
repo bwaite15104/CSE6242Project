@@ -274,7 +274,25 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 
 }
 
+.button-row {
+display: flex;
+padding: 7.5px 7.5px 0px 7.5px;
+}
 
+/* reset button position */
+#reset {
+  	padding: 5px;
+  	margin-left: 10px;
+  	position: relative;
+  	font-family: sans-serif;
+  }
+
+/* reset button position */
+#selectAll {
+  	padding: 5px;
+  	position: relative;
+  	font-family: sans-serif;
+  }
 	.bar-text {
 		font-size: 1.5rem;
 		font-family: sans-serif;
