@@ -161,8 +161,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// appends a 'group' element to 'svg'
 		// moves the 'group' element to the top left margin
 		var svg = d3.select("#chart7").append("svg")
-		    .attr("width", width + margin.left + margin.right)
-		    .attr("height", height + margin.top + margin.bottom)
+	    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    	.attr("viewBox", "0 0 500 500")
 		  .append("g")
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
