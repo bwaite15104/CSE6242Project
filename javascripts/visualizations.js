@@ -17,6 +17,17 @@ Promise.all(promises).then(ready)
 
 function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics, monthly_time_series_viz_data_approvals]) {
 
+	// initialize empty list
+	var selector_names = [];
+
+	// format data
+	speech_polarity_and_diversity.forEach(function(d) {
+		d.president_name = d.president_name;
+		d.positive = +d.positive;
+		d.negative = +d.negative;
+		d.sentiment = +d.sentiment;
+		d.speech_diversity = +d.speech_diversity;
+	});
 
 	// initailize charts			
     var svg = d3.select('#chart1');
@@ -32,49 +43,61 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	}
 
 	// function to get word diversity
-	var topline_metrics_charts = function(name) {
+	var topline_metrics_charts = function(selector_names) {
 
 		// filter data to selected name
-		var data_filtered = speech_polarity_and_diversity.filter(function(d) {
-			return d.president_name==name;
-		});
+		var data_filtered = [];
+
+		for (var i = 0; i < selector_names.length; i++) {
+			for (var j = 0; j < speech_polarity_and_diversity.length; j++) {
+				if (selector_names[i] == speech_polarity_and_diversity[j].president_name) {
+					data_filtered.push(speech_polarity_and_diversity[j]);
+				}
+			}
+		}
+
+		var data_filtered_negative_sum = 0;
+		var data_filtered_positive_sum = 0;
+		var data_filtered_sentiment_sum = 0;
+		var data_filtered_speech_diversity_sum = 0;
+
+		// average metrics in list
+		for (var i = 0; i < data_filtered.length; i++) {
+			data_filtered_negative_sum += data_filtered[i].negative;
+			data_filtered_positive_sum += data_filtered[i].positive;
+			data_filtered_sentiment_sum += data_filtered[i].sentiment;
+			data_filtered_speech_diversity_sum += data_filtered[i].speech_diversity;
+		}
+		var data_filtered_avg = [];
+		data_filtered_avg["negative"] = data_filtered_negative_sum / data_filtered.length;
+		data_filtered_avg["positive"] = data_filtered_positive_sum / data_filtered.length;
+		data_filtered_avg["sentiment"] = data_filtered_sentiment_sum / data_filtered.length;
+		data_filtered_avg["speech_diversity"] = data_filtered_speech_diversity_sum / data_filtered.length;
 
 			// chart 1 - word diversity
-			var word_diversity = svg.selectAll(".diversity")
-				.data(data_filtered)
-				.enter()
-				.append("p")
-				.text(function(d) {return Math.round(d.speech_diversity*10) / 10;})
+			var word_diversity = svg.append("p")
+				.text((Math.round(data_filtered_avg.speech_diversity*10) / 10) + '')
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "left")
 				.style("color", "#33adff");
 
 			// chart 2 - negative words
-			var word_diversity = svg2.selectAll(".negative")
-				.data(data_filtered)
-				.enter()
-				.append("p")
-				.text(function(d) {return Math.round(d.negative*10)/10;})
+			var word_diversity = svg2.append("p")
+				.text((Math.round(data_filtered_avg.negative*10)/10) + '')
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "left")
 				.style("color", "#33adff");
 
 			// chart 3 - positive words
-			var word_diversity = svg3.selectAll(".positive")
-				.data(data_filtered)
-				.enter()
-				.append("p")
-				.text(function(d) {return Math.round(d.positive*10)/10;})
+			var word_diversity = svg3.append("p")
+				.text((Math.round(data_filtered_avg.positive*10)/10) + '')
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "left")
 				.style("color", "#33adff");
 
 			// chart 2 - sentiment score
-			var word_diversity = svg4.selectAll(".sentiment")
-				.data(data_filtered)
-				.enter()
-				.append("p")
-				.text(function(d) {return Math.round(d.sentiment*10)/10;})
+			var word_diversity = svg4.append("p")
+				.text((Math.round(data_filtered_avg.sentiment*10)/10) + '')
 				.attr("class", "summary-text-num")
 				.attr("text-anchor", "left")
 				.style("color", "#33adff");
@@ -208,21 +231,78 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     	height1 = 500 - margin1.top - margin1.bottom,
     	padding1 = 20;
 
-	var barViz = function(name) {
+	var barViz = function(selector_names) {
 
 		// filter data
 		var top_20_words_filtered = top_20_words_by_president.filter(function(d) {
-			return d.president_name==name;
+			return d.president_name=='ABRAHAM LINCOLN';
 		})
+
+		// filter data to selected name
+		var words_filtered = [];
+
+		for (var i = 0; i < selector_names.length; i++) {
+			for (var j = 0; j < top_20_words_by_president.length; j++) {
+				if (selector_names[i] == top_20_words_by_president[j].president_name) {
+					var word_and_count = {"word": top_20_words_by_president[j].word, "word_count": top_20_words_by_president[j].word_count};
+					words_filtered.push(word_and_count);
+				}
+			}
+		}
+
+		// calculate sum of each word
+		var words_sum = [];
+
+		for (var i = 0; i < words_filtered.length; i++) {
+			var word_individual = {"word": words_filtered[i].word, "word_count": words_filtered[i].word_count};
+
+			if (i < 20) {
+				words_sum.push(word_individual);
+
+			} else {
+
+				for (j = 0; j < words_sum.length; j++) {
+					if (words_filtered[i].word == words_sum[j].word) {
+						words_sum[j].word_count = words_sum[j].word_count + word_individual.word_count;
+						var added = 1;
+					}
+				}
+				if (added != 1) {
+					words_sum.push(word_individual);
+
+				}
+			}
+		}
+
+	    // sort by word count
+		words_sum.sort(function(a, b){
+		    if(a.word_count < b.word_count) { return 1; }
+		    if(a.word_count > b.word_count) { return -1; }
+		    return 0;
+		});
+
+		// get only top 20 words
+		var words_clean = [];
+
+		for (i = 0; i < 20; i ++) {
+			words_clean.push(words_sum[i]);
+		}
+
+	    // reverse sort by word count
+		words_clean.sort(function(a, b){
+		    if(a.word_count < b.word_count) { return -1; }
+		    if(a.word_count > b.word_count) { return 1; }
+		    return 0;
+		});
 
 	    // make scales
 	    var xScale = d3.scaleLinear()
-	    	.domain([0, d3.max(top_20_words_filtered, function(d) {return d.word_count;})])
+	    	.domain([0, d3.max(words_clean, function(d) {return d.word_count;})])
 	    	.range([0, width1]);
 
 	    var yScale = d3.scaleBand()
 	    	.range([height1, 0]).padding(.2)
-	    	.domain(top_20_words_filtered.map(function(d) {return d.word;}));
+	    	.domain(words_clean.map(function(d) {return d.word;}));
 
 	   	// make y axis
 	   	var yAxis  = d3.axisLeft(yScale).ticks(0);
@@ -237,7 +317,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    // add bar group
 	    var bars = svg5.selectAll(".bar")
-	    	.data(top_20_words_filtered)
+	    	.data(words_clean)
 	    	.enter()
 	    	.append("g");
 
@@ -274,8 +354,24 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     	bars.append("text")
     		.attr("class", "label")
     		.attr("y", function(d) {return yScale(d.word) + yScale.bandwidth() / 2 + 4;})
-    		.attr("x", function(d) {return xScale(d.word_count) - padding1*2;})
-    		.style("fill", "#fff")
+    		.attr("x", function(d) {
+				if (xScale(d.word_count) <= 30) {
+					return padding1*1.5;
+				} else if (xScale(d.word_count) <= 50) {
+					return xScale(d.word_count) - padding1*1.4;
+    			} else if (xScale(d.word_count) <= 100) {
+					return xScale(d.word_count) - padding1*1.6;
+				} else if (xScale(d.word_count) <= 150) {
+					return xScale(d.word_count) - padding1*1.9;
+				} else {
+    				return xScale(d.word_count) - padding1*2.1;
+    			}})
+    		.style("fill", function(d) {
+    			if ((xScale(d.word_count) - padding1*1.5) <= 0) {
+    				return "#4db8ff";
+    			} else {
+    				return "#fff";
+    			};})
     		.text(function(d) {return addCommas(d.word_count);});
 
     	// mouseover function
@@ -336,12 +432,43 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    return 0;
 	});
 
-	var donutViz = function(name) {
+	var donutViz = function(selector_names) {
 
-		// filter data
-		var topics_filtered = presidential_topics.filter(function(d) {
-			return d.president_name==name;
-		})
+		// filter data to selected name
+		var topics_filtered = [];
+
+		for (var i = 0; i < selector_names.length; i++) {
+			for (var j = 0; j < presidential_topics.length; j++) {
+				if (selector_names[i] == presidential_topics[j].president_name) {
+					var topic_and_percent = {"topic": presidential_topics[j].topic, "topic_percent": presidential_topics[j].topic_percent};
+					topics_filtered.push(topic_and_percent);
+				}
+			}
+		}
+
+		// calculate sum of each topic
+		var topics_sum = [];
+
+		for (var i = 0; i < topics_filtered.length; i++) {
+			var topic_percent_individual = {"topic": topics_filtered[i].topic, "topic_percent": topics_filtered[i].topic_percent};
+
+			if (i < 10) {
+				topics_sum.push(topic_percent_individual);
+
+			} else {
+
+				for (j = 0; j < topics_sum.length; j++) {
+					if (topics_filtered[i].topic == topics_sum[j].topic) {
+						topics_sum[j].topic_percent = topics_sum[j].topic_percent + topic_percent_individual.topic_percent;
+					} 
+				}
+			}
+		}
+
+		// recalculate percentages of topics based on new sum
+		for (var i = 0; i < topics_sum.length; i++) {
+			topics_sum[i].topic_percent = topics_sum[i].topic_percent / selector_names.length;
+		}
 
 	    // add svg element
 	    var svg6 = d3.select("#chart6")
@@ -352,7 +479,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    // set up groups
 	    var arcs = svg6.selectAll("g.arc")
-	    	.data(pie(topics_filtered))
+	    	.data(pie(topics_sum))
 	    	.enter()
 	    	.append("g")
 	    	.attr("class", "arc")
@@ -375,8 +502,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	})
 	    	.attr("text-anchor", "middle")
 	    	.text(function(d, i) {
-	    		if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) >= 2) {
-	    		return topics_filtered[i].topic  + ': ' + Math.floor((topics_filtered[i].topic_percent / 1) * 100) + '%';
+	    		if (Math.floor((topics_sum[i].topic_percent / 1) * 100) >= 2) {
+	    		return topics_sum[i].topic  + ': ' + Math.floor((topics_sum[i].topic_percent / 1) * 100) + '%';
 	    		}	
 	    	});
 
@@ -385,11 +512,11 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
         var polyline = arcs.append("g")
         	.attr("class", "lines")
         	.selectAll('polyline')
-            .data(pie(topics_filtered))
+            .data(pie(topics_sum))
             .enter()
             .append('polyline')
             .attr('points', function(d, i) {
-            	if (Math.floor((topics_filtered[i].topic_percent / 1) * 100) >= 2) {
+            	if (Math.floor((topics_sum[i].topic_percent / 1) * 100) >= 2) {
 	                var pos = arc.centroid(d);
 		    		pos[0] = pos[0] * 1.27;
 		    		pos[1] = pos[1] * 1.3;
@@ -443,17 +570,18 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	};
 
-
+	// initialize selector_names with only one name
+	var selector_names_init = ["ABRAHAM LINCOLN"];
 
 	// initialize selector
-    topline_metrics_charts(presidents[0]);
-    barViz(presidents[0]);
-    donutViz(presidents[0]);
-    monthlyTimeSeries1(presidents[0]);
+    topline_metrics_charts(selector_names_init);
+    barViz(selector_names_init);
+    donutViz(selector_names_init);
+	monthlyTimeSeries1(presidents[0]);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
-  		.append("select");
+  		.selectAll("select");
 
   	nameSelector.selectAll(".name-select")
 	    .data(presidents)
@@ -463,24 +591,56 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    .text(function(d) {return d;})
 	    .attr("class", "name-select");
 
-    nameSelector.on("change", function() {
-    	var selection = d3.select(this)
-    		.property("value");
-    	
-    	// remove old value
-		d3.selectAll("#chart1").selectAll("p").remove();
-		d3.selectAll("#chart2").selectAll("p").remove();
-		d3.selectAll("#chart3").selectAll("p").remove();				
-		d3.selectAll("#chart4").selectAll("p").remove();
-		d3.selectAll("#chart5").selectAll("svg").remove();
-		d3.selectAll("#chart6").selectAll("svg").remove();
-		d3.selectAll("#chart7").selectAll("svg").remove();
 
-    	topline_metrics_charts(selection);
-    	barViz(selection);
-    	donutViz(selection);
-    	monthlyTimeSeries1(selection);
-    });
+		// jquery multi selector
+		$(document).ready(function() {
+						    var $multiselect = $('.multi-select').select2({
+						    	placeholder: 'Select President(s)',
+						    	width: '20%',
+						    	maximumSelectionLength: 3
+						    });
+
+						    // add names and update visualizations
+							$('.multi-select').on('select2:select', function (e) {
+							    var name = e.params.data.text;
+							    selector_names.push(name);
+
+						    	// remove old value
+								d3.selectAll("#chart1").selectAll("p").remove();
+								d3.selectAll("#chart2").selectAll("p").remove();
+								d3.selectAll("#chart3").selectAll("p").remove();				
+								d3.selectAll("#chart4").selectAll("p").remove();
+								d3.selectAll("#chart5").selectAll("svg").remove();
+								d3.selectAll("#chart6").selectAll("svg").remove();
+								d3.selectAll("#chart7").selectAll("svg").remove();
+
+						    	topline_metrics_charts(selector_names);
+						    	barViz(selector_names);
+						    	donutViz(selector_names);
+						    	monthlyTimeSeries1(name);
+
+							});
+
+							// remove items and update visualizations
+							$('.multi-select').on('select2:unselect', function (e) {
+								var name = e.params.data.text;
+								selector_names.splice(selector_names.indexOf(name), 1);
+
+						    	// remove old value
+								d3.selectAll("#chart1").selectAll("p").remove();
+								d3.selectAll("#chart2").selectAll("p").remove();
+								d3.selectAll("#chart3").selectAll("p").remove();				
+								d3.selectAll("#chart4").selectAll("p").remove();
+								d3.selectAll("#chart5").selectAll("svg").remove();
+								d3.selectAll("#chart6").selectAll("svg").remove();
+								d3.selectAll("#chart7").selectAll("svg").remove();
+
+						    	topline_metrics_charts(selector_names);
+						    	barViz(selector_names);
+						    	donutViz(selector_names);
+						    	monthlyTimeSeries1(name);
+							});
+						});
 
 };
 
