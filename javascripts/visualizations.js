@@ -660,6 +660,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							// reset selector button
 							$("#reset").click(function() {
 								$('.multi-select').val(null).trigger('change');
+								selector_names = [];
 						    	// remove old value
 								d3.selectAll("#chart1").selectAll("p").remove();
 								d3.selectAll("#chart2").selectAll("p").remove();
@@ -678,7 +679,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 							// select all selector button
 							$("#selectAll").click(function() {
-						    	var newOption = new Option("All Presidents", presidents, true, true);
+								selector_names = [];
+						    	var newOption = new Option("All Presidents", presidents, false, false);
 								$('.multi-select').append(newOption).trigger('change');
 
 						    	// remove old value
