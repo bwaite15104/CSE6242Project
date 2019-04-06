@@ -121,9 +121,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		d.avg_approval = +d.avg_approval;
 	});
 
-	console.log(monthly_time_series_viz_data_approvals);
-
-	var monthlyTimeSeries1 = function(name) {
+	var monthlyTimeSeries1 = function(selector_names) {
 
 		/*
 		// Filter data for development purposes, remove when done
@@ -132,14 +130,30 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		})
 		*/
 		// Filter data for development purposes, remove when done
-		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
-			return d.president == name;
-		})
+		//var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
+		//	return d.president == 'ABRAHAM LINCOLN';
+		//})
+
+		var monthly_time_series_filtered = [];
+		for (var i = 0; i < selector_names.length; i++) {
+			for (j = 0; j < monthly_time_series_viz_data_approvals.length; j++) {
+				if (selector_names[i] == monthly_time_series_viz_data_approvals[j].president) {
+					monthly_time_series_filtered.push(monthly_time_series_viz_data_approvals[j]);
+				}
+			}
+		}
+
+	    // sort by date
+	    var sortDate = function(a, b) {
+	    	return a.month - b.month;
+	    };
+
+	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortDate);
 
 		// set margins and padding
-		var margin = {top: 60, right: 30, bottom: 20, left: 75},
+		var margin = {top: 30, right: 30, bottom: 20, left: 30},
 	    	width = 500 - margin.left - margin.right,
-	    	height = 500 - margin.top - margin.bottom,
+	    	height = 250 - margin.top - margin.bottom,
 	    	padding = 20;
 
 	    // set the ranges
@@ -162,7 +176,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// moves the 'group' element to the top left margin
 		var svg = d3.select("#chart7").append("svg")
 	    	.attr("preserveAspectRatio", "xMinYMin meet")
-	    	.attr("viewBox", "0 0 500 500")
+	    	.attr("viewBox", "0 0 500 250")
 		  .append("g")
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
@@ -177,6 +191,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	svg.append("path")
 	    	.data([monthly_time_series_filtered])
 	      	.attr("class", "line")
+	      	.style("stroke-width", '1px')
 	      	.attr("d", valueline);
 
 	  	// Add the valueline2 path.
@@ -184,6 +199,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
       		.data([monthly_time_series_filtered])
       		.attr("class", "line")
       		.style("stroke", "red")
+      		.style("stroke-width", '1px')
       		.attr("d", valueline2);
 
 	  	// Add the X Axis
@@ -577,7 +593,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     topline_metrics_charts(selector_names_init);
     barViz(selector_names_init);
     donutViz(selector_names_init);
-	monthlyTimeSeries1(presidents[0]);
+	monthlyTimeSeries1(selector_names_init);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
@@ -596,8 +612,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		$(document).ready(function() {
 						    var $multiselect = $('.multi-select').select2({
 						    	placeholder: 'Select President(s)',
-						    	width: '20%',
-						    	maximumSelectionLength: 3
+						    	width: '20%'
+						    	//maximumSelectionLength: 3
 						    });
 
 						    // add names and update visualizations
@@ -617,7 +633,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 						    	topline_metrics_charts(selector_names);
 						    	barViz(selector_names);
 						    	donutViz(selector_names);
-						    	monthlyTimeSeries1(name);
+						    	monthlyTimeSeries1(selector_names);
 
 							});
 
@@ -638,7 +654,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 						    	topline_metrics_charts(selector_names);
 						    	barViz(selector_names);
 						    	donutViz(selector_names);
-						    	monthlyTimeSeries1(name);
+						    	monthlyTimeSeries1(selector_names);
 							});
 						});
 
