@@ -20,6 +20,9 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	// initialize empty list
 	var selector_names = [];
 
+	// last five presidents
+	var last_five_presidents = ['DONALD TRUMP', 'BARACK OBAMA', 'GEORGE W. BUSH', 'BILL CLINTON'];
+
 	// format data
 	speech_polarity_and_diversity.forEach(function(d) {
 		d.president_name = d.president_name;
@@ -612,14 +615,22 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		$(document).ready(function() {
 							// selector defaults
 						    var $multiselect = $('.multi-select').select2({
-						    	placeholder: 'Select President(s)',
+						    	placeholder: selector_names_init[0],
 						    	width: '20%'
 						    });
 
 						    // add names and update visualizations
 							$('.multi-select').on('select2:select', function (e) {
 							    var name = e.params.data.text;
-							    selector_names.push(name);
+							    
+							    // if select all presidents or last five, make the list equal to it
+							    if (name == 'All Presidents') {
+							    	selector_names = presidents;
+							    } else if (name == 'Last Five') {
+							    	selector_names = last_five_presidents;
+							    } else {
+							    	selector_names.push(name);
+							    }
 
 						    	// remove old value
 								d3.selectAll("#chart1").selectAll("p").remove();
@@ -640,7 +651,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							// remove items and update visualizations
 							$('.multi-select').on('select2:unselect', function (e) {
 								var name = e.params.data.text;
-								selector_names.splice(selector_names.indexOf(name), 1);
+
+								// if unselect all presidents, revert to empty list
+								if (name == 'All Presidents' | name == 'Last Five') {
+									selector_names = [];
+								} else {
+									selector_names.splice(selector_names.indexOf(name), 1);
+								}
 
 						    	// remove old value
 								d3.selectAll("#chart1").selectAll("p").remove();
@@ -651,16 +668,27 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
 
-						    	topline_metrics_charts(selector_names);
-						    	barViz(selector_names);
-						    	donutViz(selector_names);
-						    	monthlyTimeSeries1(selector_names);
+								// if all items are removed, revert to default
+								if (selector_names.length != 0) {
+
+							    	topline_metrics_charts(selector_names);
+							    	barViz(selector_names);
+							    	donutViz(selector_names);
+							    	monthlyTimeSeries1(selector_names);
+							    } else {
+									// initialize selector
+								    topline_metrics_charts(selector_names_init);
+								    barViz(selector_names_init);
+								    donutViz(selector_names_init);
+									monthlyTimeSeries1(selector_names_init);
+							    }
 							});
 
 							// reset selector button
 							$("#reset").click(function() {
 								$('.multi-select').val(null).trigger('change');
 								selector_names = [];
+
 						    	// remove old value
 								d3.selectAll("#chart1").selectAll("p").remove();
 								d3.selectAll("#chart2").selectAll("p").remove();
@@ -679,10 +707,16 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 							// select all selector button
 							$("#selectAll").click(function() {
+								$('.multi-select').val(null).trigger('change');
 								selector_names = [];
-						    	var newOption = new Option("All Presidents", presidents, false, false);
-								$('.multi-select').append(newOption).trigger('change');
-
+								if (typeof(selectAllPresidents) != "undefined") {
+									$('.multi-select').children().last().remove();
+									selectAllPresidents = new Option("All Presidents", presidents, true, true);
+									$('.multi-select').append(selectAllPresidents).trigger('change');
+								} else {
+									selectAllPresidents = new Option("All Presidents", presidents, true, true);
+									$('.multi-select').append(selectAllPresidents).trigger('change');
+								}
 						    	// remove old value
 								d3.selectAll("#chart1").selectAll("p").remove();
 								d3.selectAll("#chart2").selectAll("p").remove();
@@ -697,6 +731,35 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    barViz(presidents);
 							    donutViz(presidents);
 								monthlyTimeSeries1(presidents);
+							})
+
+							// select last five presidents button
+							$("#selectLastFive").click(function() {
+								$('.multi-select').val(null).trigger('change');
+								selector_names = [];
+								if (typeof(selectFive) != "undefined") {
+									$('.multi-select').children().last().remove();
+									selectFive = new Option("Last Five", last_five_presidents, true, true);
+									$('.multi-select').append(selectFive).trigger('change');
+								} else {
+									selectFive = new Option("Last Five", last_five_presidents, true, true);
+									$('.multi-select').append(selectFive).trigger('change');
+								}
+								
+						    	// remove old value
+								d3.selectAll("#chart1").selectAll("p").remove();
+								d3.selectAll("#chart2").selectAll("p").remove();
+								d3.selectAll("#chart3").selectAll("p").remove();				
+								d3.selectAll("#chart4").selectAll("p").remove();
+								d3.selectAll("#chart5").selectAll("svg").remove();
+								d3.selectAll("#chart6").selectAll("svg").remove();
+								d3.selectAll("#chart7").selectAll("svg").remove();
+
+								// initialize selector
+							    topline_metrics_charts(last_five_presidents);
+							    barViz(last_five_presidents);
+							    donutViz(last_five_presidents);
+								monthlyTimeSeries1(last_five_presidents);
 							})
 						});
 
