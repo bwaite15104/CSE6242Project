@@ -54,6 +54,11 @@ display: flex;
 padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
+.chart-row-5 {
+display: flex;
+padding: 7.5px 7.5px 7.5px 7.5px;
+}
+
 .header {
 	position: fixed;
 	width: 100%;
@@ -91,7 +96,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart0-container {
+#chart1-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -108,7 +113,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart1-container {
+#chart2-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -124,7 +129,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart2-container {
+#chart3-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -141,7 +146,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart3-container {
+#chart4-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -159,7 +164,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart4-container {
+#chart5-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -177,7 +182,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart5-container {
+#chart6-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -199,7 +204,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart5-container {
+#chart7-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
@@ -215,13 +220,29 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
 @media (min-width: 992px)
-#chart5-container {
+#chart8-container {
 	flex-grow: 0;
 	flex-shrink: 0;
 	flex-basis: 50%;
 	max-width: 50%;
 }
 
+
+#chart9-container {
+	background-color: #fff;
+	margin-right: 7.5px;
+	margin-left: 7.5px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+@media (min-width: 992px)
+#chart9-container {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	max-width: 50%;
+}
 	.axis-style {
 	font-size: 11px;
     font-family: sans-serif;
