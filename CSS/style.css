@@ -49,6 +49,11 @@ display: flex;
 padding: 7.5px 7.5px 7.5px 7.5px;
 }
 
+.chart-row-4 {
+display: flex;
+padding: 7.5px 7.5px 7.5px 7.5px;
+}
+
 .header {
 	position: fixed;
 	width: 100%;
