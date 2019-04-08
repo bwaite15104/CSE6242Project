@@ -236,6 +236,19 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	border-radius: 5px;
 }
 
+#chart9 .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+
+.loess-line {
+	fill: none;
+	stroke-width: 2px;
+	stroke: steelblue;
+}
+
 @media (min-width: 992px)
 #chart9-container {
 	flex-grow: 0;

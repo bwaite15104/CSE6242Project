@@ -245,5 +245,5 @@ impute$president <- toupper(impute$president)
 # Fix NA values
 impute$avg_approval[is.na(impute$avg_approval)] <- NaN
 
-write.csv(impute, 'monthly_time_series_viz_data_approvals.csv')
+  write.csv(impute, 'monthly_time_series_viz_data_approvals.csv')
 

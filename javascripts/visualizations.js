@@ -223,6 +223,137 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	};
 
+	////////////////////////////////////////////////
+	//   Logistic Regression Scatter Plot
+	////////////////////////////////////////////////
+
+	var regressionScatter = function() {
+
+		// Filter NA values in avg approval for complete regression data set
+		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
+			//return d.president != 'BARACK OBAMA';
+			return !isNaN(d.avg_approval);
+		});
+
+		var monthly_time_series_filtered = monthly_time_series_filtered.filter(function(d) {
+			//return d.president != 'BARACK OBAMA';
+			return d.avg_sentiment >= 0.0;
+		});
+
+		var monthly_time_series_filtered = monthly_time_series_filtered.filter(function(d) {
+			//return d.president != 'BARACK OBAMA';
+			return !isNaN(d.avg_sentiment);
+		});
+
+		// sort by date
+	    var sortApproval = function(a, b) {
+	    	return a.avg_approval - b.avg_approval;
+	    };
+
+	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortApproval);
+/*
+		// set margins and padding
+		var margin = {top: 30, right: 30, bottom: 20, left: 30},
+	    	width = 500 - margin.left - margin.right,
+	    	height = 250 - margin.top - margin.bottom,
+	    	padding = 20;
+
+		// append the svg object to the body of the page
+		// appends a 'group' element to 'svg'
+		// moves the 'group' element to the top left margin
+		var svg = d3.select("#chart9").append("svg")
+	    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    	.attr("viewBox", "0 0 500 250")
+		  .append("g")
+		    .attr("transform",
+		          "translate(" + margin.left + "," + margin.top + ")");
+*/
+		var x_property = "avg_approval", y_property = "avg_sentiment";
+
+		var margin = {left: 30, right: 5, top: 5, bottom: 20},
+		  aspect_ratio = .68,
+		  width,
+		  height;
+
+		var x_scale = d3.scaleLinear();
+		var y_scale = d3.scaleLinear();
+
+		var x_axis_generator = d3.axisBottom().tickFormat(d => d)
+		var y_axis_generator = d3.axisLeft();
+
+		var loess_generator = science.stats.loess(), loess_values, loess_data;
+		var line_generator = d3.line()
+			.x(d => x_scale(d[x_property]))
+			.y(d => y_scale(d[y_property]));
+
+		var input = d3.select("input");
+		var svg = d3.select("#chart9").append("svg");
+		var g = svg.append("g");
+
+		var x_axis = g.append("g");
+		var y_axis = g.append("g");
+
+		var x_values = monthly_time_series_filtered.map(d => d[x_property]);
+		var y_values = monthly_time_series_filtered.map(d => d[y_property]);
+
+		x_scale.domain(d3.extent(x_values));
+		y_scale.domain(d3.extent(y_values));
+
+		var points = g.selectAll("circle")
+		    .data(monthly_time_series_filtered)
+		  .enter().append("circle")
+		    .attr("r", 3);
+
+		function draw(resizing, adjusting){
+		  if (resizing){
+		    //width = window.innerWidth - margin.left - margin.right;
+		    width = 1000 - margin.left - margin.right;
+		    height = d3.min([window.innerHeight, (width * aspect_ratio)]) - margin.top - margin.bottom;
+
+		    x_scale.range([0, width]);
+		    y_scale.range([height, 0]);
+
+		    x_axis_generator.scale(x_scale);
+		    y_axis_generator.scale(y_scale);
+
+		    svg
+		        .attr("width", width + margin.left + margin.right)
+		        .attr("height", height + margin.top + margin.bottom);
+
+		    g.attr("transform", "translate(" + [margin.left, margin.top] + ")");
+
+		    x_axis
+		        .attr("transform", "translate(0, " + height + ")")
+		        .call(x_axis_generator);
+
+		    y_axis.call(y_axis_generator);
+
+		    points.attr("transform", d => "translate(" + [x_scale(d[x_property]), y_scale(d[y_property])] + ")");
+		  }
+		  
+		  if (adjusting){
+		    var new_bandwidth = input.property("value") / 100;
+		    d3.select(".bandwidth").html(new_bandwidth.toFixed(2));
+		    loess_generator.bandwidth(new_bandwidth);
+		    loess_values = loess_generator(x_values, y_values);
+		    loess_data = monthly_time_series_filtered.map((d, i) => ({avg_approval: d[x_property], avg_sentiment: loess_values[i]}));
+		  }
+
+		  var loess_line = g.selectAll(".loess-line")
+		      .data([loess_data]);
+
+		  loess_line.enter().append("path")
+		      .attr("class", "loess-line")
+		    .merge(loess_line)
+		      .attr("d", line_generator);
+		}
+
+		draw(1, 1);
+			window.addEventListener("resize", _ => draw(1, 0));
+			input.on("input", _ => draw(0, 1));
+
+	};
+
 
 	/////////////////////////////////////////////////
 	//
@@ -597,6 +728,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     barViz(selector_names_init);
     donutViz(selector_names_init);
 	monthlyTimeSeries1(selector_names_init);
+	regressionScatter();
 
     // make year picker
   	var nameSelector = d3.select("#selector")
