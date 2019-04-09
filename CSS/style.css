@@ -394,3 +394,77 @@ polyline {
 		font-family: sans-serif;
 		color: #383838;
 	}
+
+/* Styling for the Sentiment vs. Economics graph */
+
+#chart8-container .grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.2;
+  shape-rendering: crispEdges;
+}
+
+#chart8-container .grid path {
+  stroke-width: 0;
+}
+
+#chart8-container body {
+  font-family: 'PT Sans', sans-serif;
+	font-color:#000b95;
+	cursor: default;
+}
+
+#chart8-container svg {
+  font: 12px sans-serif;
+  font-family: "Helvetica Neue", Helvetica;
+  color:#000b95;
+}
+
+#chart8-container .line {
+  fill: none;
+  stroke: #000b95;
+  stroke-width: 1px;
+}
+
+#chart8-container .axis line,
+#chart8-container .axis path {
+  fill: none;
+  stroke: #000b95;
+  color:#000b95;
+  shape-rendering: crispEdges;
+}
+
+#chart8-container .label {
+  font-size: .5rem;
+  -webkit-transition: fill 125ms linear;
+  color:#000b95;
+}
+
+#chart8-container .active .label:not(.inactive) {
+  font-weight: bold;
+  font-size: 11px;
+}
+
+#chart8-container .clickableLegend {
+	stroke:#fff;
+	fill:#fff;
+	fill-opacity:0;
+	stroke-opacity:0;
+	cursor: pointer;
+}
+
+#chart8-container .legend {
+	font-size: 12px;
+}
+
+#chart8-container .legend rect {
+	stroke-width: 2;
+}
+
+#chart8-container .grid .tick {
+    stroke: lightgrey;
+    stroke-opacity: 0.2;
+}
+
+#chart8-container .grid path {
+      stroke-width: 0;
+}

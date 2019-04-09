@@ -10,12 +10,13 @@ var promises = [
   d3.csv("data/speech_polarity_and_diversity.csv"),
   d3.csv("data/top_20_words_by_president.csv"),
   d3.csv("data/presidential_topics.csv"),
-  d3.csv("data/monthly_time_series_viz_data_approvals.csv")
+  d3.csv("data/monthly_time_series_viz_data_approvals.csv"),
+  d3.csv("data/sentiment_vs_economics.csv")
 ]
 
 Promise.all(promises).then(ready)
 
-function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics, monthly_time_series_viz_data_approvals]) {
+function ready([speech_polarity_and_diversity, top_20_words_by_president, presidential_topics, monthly_time_series_viz_data_approvals, sentiment_vs_economics]) {
 
 	// initialize empty list
 	var selector_names = [];
@@ -235,6 +236,485 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    .attr("transform", "rotate(-90)")
 		    .text("Sentiment Score");
 	};
+
+	/////////////////////////////////////////////////
+	//   Monthly Time Series: Economics vs. Sentiment
+	/////////////////////////////////////////////////
+
+	// format data
+	sentiment_vs_economics.forEach(function(d) {
+		d.president = d.president;
+		d.speech_year = +d.speech_year;
+		d.month = format(d.month);
+		d.avg_sentiment = +d.avg_sentiment
+		d.avg_approval = +d.avg_approval;
+		d.unemploychg = +d.unemploychg;
+		d.sp500chg = +d.sp500chg;
+		d.cons_sentchg = +d.cons_sentchg;
+		d.real_gdpchg = +d.real_gdpchg;
+		d.cpichg = +d.cpichg;
+		d.pcechg = +d.pcechg;
+		d.gdpc1chg = +d.gdpc1chg;
+		d.ind_prochg = +d.ind_prochg;
+		d.savingschg = +d.savingschg;
+		d.avg_sentiment_ctr = +d.avg_sentiment_ctr;
+	});
+
+	var monthlyTimeSeries2 = function(selector_names) {
+
+		// set margins and padding
+		var margin = {top: 5, right: 45, bottom: 40, left: 40},
+	    	width = 500 - margin.left - margin.right,
+	    	height = 250 - margin.top - margin.bottom,
+	    	padding = 20;
+		var headHeight = 60;
+    	var color = d3.scaleOrdinal(["#000000", "#8dd3c7", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f"]);
+		var overlappingPathOpacity = 0.5;
+		var legendRectSize = 15;
+		var legendSpacing = 4;
+
+		var monthly_time_series_filtered2 = [];
+		for (var i = 0; i < selector_names.length; i++) {
+			for (var j = 0; j < sentiment_vs_economics.length; j++) {
+				if (selector_names[i] == sentiment_vs_economics[j].president) {
+					monthly_time_series_filtered2.push(sentiment_vs_economics[j]);
+				}
+			}
+		}
+
+		if (monthly_time_series_filtered2.length == 0) {
+			for (var j = 0; j < sentiment_vs_economics.length; j++) {
+				monthly_time_series_filtered2.push(sentiment_vs_economics[j]);
+			}
+		}
+
+		d3.select("#chart8header").append("p")
+	  		.text("Sentiment vs. Economic Data: 1959 - 2018")
+	  		.attr("class", "summary-text-top");
+
+		var nY = d3.extent(monthly_time_series_filtered2, function(d) { return d.speech_year; });
+		var numYears = nY[1] - nY[0];
+
+	    // sort by date
+	    var sortDate = function(a, b) {
+	    	return a.month - b.month;
+	    };
+
+	    monthly_time_series_filtered2 = monthly_time_series_filtered2.sort(sortDate);
+
+		var x = d3.scaleTime().range([0, width]);
+		var y = d3.scaleLinear().range([height, 0]);
+		var yr = d3.scaleLinear().range([height, 0]);
+
+		var xRange = d3.extent(monthly_time_series_filtered2, function(d) { return d.month; });
+		var yRange = [d3.min(monthly_time_series_filtered2, function(d) {return d3.min(Object.values(d).slice(6,17));}), 
+						d3.max(monthly_time_series_filtered2, function(d) {return d3.max(Object.values(d).slice(6,17));})];
+		
+		x.domain(xRange);
+		y.domain(yRange);
+		yr.domain(d3.extent(monthly_time_series_filtered2, function(d) { return d.avg_sentiment; }));
+
+		var lineas = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return yr(d.avg_sentiment); });
+
+		var lineue = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.unemploychg); });
+
+		var linesp = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.sp500chg); });                      
+
+		var linecs = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.cons_sentchg); });
+
+		var linerg = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.real_gdpchg); });											
+
+		var linecp = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.cpichg); });
+
+		var linepc = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.pcechg); });
+
+		var lineip = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.ind_prochg); });
+
+		var linesv = d3.line()
+		.curve(d3.curveBasis) 
+		.x(function(d) { return x(d.month); })
+		.y(function(d) { return y(d.savingschg); });
+
+		var svg = d3.select("#chart8").append("svg")
+	    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    	.attr("viewBox", "0 0 500 250")
+		  .append("g")
+		    .attr("transform",
+		          "translate(" + margin.left + "," + margin.top + ")");
+
+		//
+		// Axis Labels
+		d3.select("#chart8 svg").append("text")
+		.attr("class", "x label")
+		.attr("text-anchor", "end")
+		.attr("x", margin.left + width/2)
+		.attr("y", height + margin.top + margin.bottom - 7)
+		.text("Time");
+
+		d3.select("#chart8 svg").append("text")
+		.attr("class", "y label")
+		.attr("text-anchor", "center")
+		.attr("x", -height/2 - margin.bottom)
+		.attr("y", 7)
+		.attr("dy", ".75em")
+		.attr("transform", "rotate(-90)")
+		.text("Econometric Percent Change");
+
+		d3.select("#chart8 svg").append("text")
+		.attr("class", "yr label")
+		.attr("text-anchor", "center")
+		.attr("x", -height/2 - margin.bottom)
+		.attr("y", width + margin.left + 33	)
+		.attr("dy", ".75em")
+		.attr("transform", "rotate(-90)")
+		.text("Average Speech Sentiment");
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "asline")
+		.attr("d", lineas)
+		.attr("data-legend","Average Sentiment")
+		.attr("visibility","visible")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(1) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "ueline")
+		.attr("d", lineue)
+		.attr("data-legend","Unemployment")
+		.attr("visibility","visible")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(2) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "spline")
+		.attr("d", linesp)
+		.attr("data-legend","S&P 500")
+		.attr("visibility","visible")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(3) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "csline")
+		.attr("d", linecs)
+		.attr("data-legend","Consumer Sentiment")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(4) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "rgline")
+		.attr("d", linerg)
+		.attr("data-legend","Real GDP")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(5) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "cpline")
+		.attr("d", linecp)
+		.attr("data-legend","CPI")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(6) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "pcline")
+		.attr("d", linepc)
+		.attr("data-legend","Personal Consumption")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(7) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "ipline")
+		.attr("d", lineip)
+		.attr("data-legend","Industrial Production")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(8) } );
+
+		svg.append("path")
+		.datum(monthly_time_series_filtered2)
+		.attr("class", "svline")
+		.attr("d", linesv)
+		.attr("data-legend","Personal Savings")
+		.attr("visibility","hidden")
+		.style("fill", "none")
+		.style("stroke", function(d) { return color(9) } );
+
+	  	// Add the X Axis
+	  	svg.append("g")
+	    	.attr("transform", "translate(0," + height + ")")
+	    	.call(d3.axisBottom(x));
+
+	  	// Add the Y Axis
+	  	svg.append("g")
+	    	.attr("class", "axisSteelBlue")
+	    	.call(d3.axisLeft(y));
+
+	  	// Add the YR Axis
+	  	svg.append("g")
+	    	.attr("class", "axisRed")
+	    	.attr("transform", "translate( " + width + ", 0 )")
+	    	.call(d3.axisRight(yr));
+
+		// gridlines in x axis function
+		function make_x_gridlines() {		
+		    return d3.axisBottom(x)
+		        .ticks(15)
+		}
+
+		// gridlines in y axis function
+		function make_y_gridlines() {		
+		    return d3.axisLeft(y)
+		        .ticks(10)
+		}
+
+		// add the X gridlines
+		svg.append("g")			
+		  .attr("class", "grid")
+		  .attr("transform", "translate(0," + height + ")")
+		  .call(make_x_gridlines()
+		      .tickSize(-height)
+		      .tickFormat("")
+		  )
+
+		// add the Y gridlines
+		svg.append("g")			
+		  .attr("class", "grid")
+		  .call(make_y_gridlines()
+		      .tickSize(-width)
+		      .tickFormat("")
+		  )
+
+		// header
+		var svghead = d3.select("#chart8header").append("svg")
+		.attr("width", width + margin.left + margin.right*2 + padding*4)
+		.attr("height", headHeight)
+		.append("g")
+		.attr("transform", "translate(" + (margin.left + padding*6) + ",0)");
+
+		d3.select("#chart8header svg").append("text")
+		.attr("x",padding*2)
+		.attr("y",12)
+		.text("Legend:")
+		.style("font-weight","bold");
+		
+		d3.select("#chart8header svg").append("text")
+		.attr("x",padding*2)
+		.attr("y",32)
+		.text("(click to select)");
+
+		var legend = svghead.selectAll('.legend')
+		.data(color.domain())
+		.enter()
+		.append('g')
+		.attr('class', 'legend')
+		.attr('transform', function(d, i) {
+			var column = Math.floor(i/3);
+			var height = legendRectSize + legendSpacing;
+					var offset =  legendSpacing;
+					var horz = column*150;
+					var vert = i * height - (column * 3 * height) + offset;
+					return 'translate(' + horz + ',' + vert + ')';
+				});
+
+		legend.append('rect')
+		.attr('width', legendRectSize)
+		.attr('height', legendRectSize)
+		.style('fill', color)
+		.style("fill-opacity", function(d, i) {
+			if (i < 3) {
+				return overlappingPathOpacity;
+			} else {
+				return 0;
+			}})
+		.style('stroke', color);
+
+		legend.append('text')
+		.attr('x', legendRectSize + legendSpacing)
+		.attr('y', legendRectSize - legendSpacing)
+		.text(function(d,i) { 
+			if (i == 0) {
+				return "Speech Sentiment"
+			} else if (i == 1) {
+				return "Unemployment"
+			} else if (i == 2) {
+				return "S&P 500"
+			} else if (i == 3) {
+				return "Consumer Sentiment"
+			} else if (i == 4) {
+				return "Real GDP"
+			} else if (i == 5) {
+				return "CPI"
+			} else if (i == 6) {
+				return "Personal Consumption"
+			} else if (i == 7) {
+				return "Industrial Production"
+			} else if (i == 8) {
+				return "Personal Savings"
+			};
+		});
+
+		d3.select(".clickableLegend").remove();
+		
+		svghead.append("rect")
+		.attr("class","clickableLegend")
+		.attr("width", 475)
+		.attr("height", (legendRectSize + legendSpacing) * 3)
+		.on('click', function(d) { legClicked(d3.mouse(this)) });
+
+	};
+
+
+	function legClicked(mouse) {
+
+		var legendRectSize = 15;
+		var legendSpacing = 4;
+		var overlappingPathOpacity = 0.5;
+
+		var whichColumn = Math.floor(mouse[0]/150);
+
+		var whichLeg = Math.floor(mouse[1]/(legendRectSize + legendSpacing)) + 3*whichColumn;
+		
+		if (whichLeg == 0) {
+			d3.select(".asline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+
+		if (whichLeg == 1) {
+			d3.select(".ueline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+		
+		if (whichLeg == 2) {
+			d3.select(".spline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+
+		if (whichLeg == 3) {
+			d3.select(".csline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+		
+		if (whichLeg == 4) {
+			d3.select(".rgline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+		
+		if (whichLeg == 5) {
+			d3.select(".cpline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+				
+		if (whichLeg == 6) {
+			d3.select(".pcline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+				
+		if (whichLeg == 7) {
+			d3.select(".ipline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+				
+		if (whichLeg == 8) {
+			d3.select(".svline")
+			.attr("visibility", function() {
+				if (d3.select(this).attr("visibility") == "visible") {
+					return "hidden";
+				} else {
+					return "visible";
+				}});
+		};
+
+		d3.selectAll(".legend rect")
+		.style("fill-opacity", function(d, i) {
+			var existOpacity = d3.select(this).style("fill-opacity");
+			if ((d-1) == whichLeg) {
+				if (existOpacity == 0) {
+					return overlappingPathOpacity;
+				} else {
+					return 0;
+				};
+			} else {
+				return existOpacity;
+			};
+		});
+
+	};
+
 
 	////////////////////////////////////////////////
 	//   Linear Regression Scatter Plot
@@ -746,6 +1226,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     barViz(selector_names_init);
     donutViz(selector_names_init);
 	monthlyTimeSeries1(selector_names_init);
+	monthlyTimeSeries2(selector_names_init);
 	regressionScatter();
 
     // make year picker
@@ -790,11 +1271,15 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart5").selectAll("svg").remove();
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
+								d3.selectAll("#chart8header").selectAll("p").remove();
+								d3.selectAll("#chart8header").selectAll("svg").remove();
+								d3.selectAll("#chart8").selectAll("svg").remove();
 
 						    	topline_metrics_charts(selector_names);
 						    	barViz(selector_names);
 						    	donutViz(selector_names);
 						    	monthlyTimeSeries1(selector_names);
+						    	monthlyTimeSeries2(selector_names);
 
 							});
 
@@ -817,6 +1302,9 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart5").selectAll("svg").remove();
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
+								d3.selectAll("#chart8header").selectAll("p").remove();
+								d3.selectAll("#chart8header").selectAll("svg").remove();
+								d3.selectAll("#chart8").selectAll("svg").remove();
 
 								// if all items are removed, revert to default
 								if (selector_names.length != 0) {
@@ -825,12 +1313,14 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    	barViz(selector_names);
 							    	donutViz(selector_names);
 							    	monthlyTimeSeries1(selector_names);
+							    	monthlyTimeSeries2(selector_names);
 							    } else {
 									// initialize selector
 								    topline_metrics_charts(selector_names_init);
 								    barViz(selector_names_init);
 								    donutViz(selector_names_init);
 									monthlyTimeSeries1(selector_names_init);
+									monthlyTimeSeries2(selector_names_init);
 							    }
 							});
 
@@ -847,12 +1337,16 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart5").selectAll("svg").remove();
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
+								d3.selectAll("#chart8header").selectAll("p").remove();
+								d3.selectAll("#chart8header").selectAll("svg").remove();
+								d3.selectAll("#chart8").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(selector_names_init);
 							    barViz(selector_names_init);
 							    donutViz(selector_names_init);
 								monthlyTimeSeries1(selector_names_init);
+								monthlyTimeSeries2(selector_names_init);
 							})
 
 							// select all selector button
@@ -875,12 +1369,16 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart5").selectAll("svg").remove();
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
+								d3.selectAll("#chart8header").selectAll("p").remove();
+								d3.selectAll("#chart8header").selectAll("svg").remove();
+								d3.selectAll("#chart8").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(presidents);
 							    barViz(presidents);
 							    donutViz(presidents);
 								monthlyTimeSeries1(presidents);
+								monthlyTimeSeries2(presidents);
 							})
 
 							// select last five presidents button
@@ -904,12 +1402,16 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart5").selectAll("svg").remove();
 								d3.selectAll("#chart6").selectAll("svg").remove();
 								d3.selectAll("#chart7").selectAll("svg").remove();
+								d3.selectAll("#chart8header").selectAll("p").remove();
+								d3.selectAll("#chart8header").selectAll("svg").remove();
+								d3.selectAll("#chart8").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(last_five_presidents);
 							    barViz(last_five_presidents);
 							    donutViz(last_five_presidents);
 								monthlyTimeSeries1(last_five_presidents);
+								monthlyTimeSeries2(last_five_presidents);
 							})
 						});
 
