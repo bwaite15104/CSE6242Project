@@ -126,17 +126,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	var monthlyTimeSeries1 = function(selector_names) {
 
-		/*
-		// Filter data for development purposes, remove when done
-		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
-			return d.president == 'barack obama';
-		})
-		*/
-		// Filter data for development purposes, remove when done
-		//var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
-		//	return d.president == 'ABRAHAM LINCOLN';
-		//})
-
 		var monthly_time_series_filtered = [];
 		for (var i = 0; i < selector_names.length; i++) {
 			for (j = 0; j < monthly_time_series_viz_data_approvals.length; j++) {
@@ -156,7 +145,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// set margins and padding
 		var margin = {top: 30, right: 30, bottom: 20, left: 30},
 	    	width = 500 - margin.left - margin.right,
-	    	height = 250 - margin.top - margin.bottom,
+	    	height = 350 - margin.top - margin.bottom,
 	    	padding = 20;
 
 	    // set the ranges
@@ -179,7 +168,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// moves the 'group' element to the top left margin
 		var svg = d3.select("#chart7").append("svg")
 	    	.attr("preserveAspectRatio", "xMinYMin meet")
-	    	.attr("viewBox", "0 0 500 250")
+	    	.attr("viewBox", "0 0 500 350")
 		  .append("g")
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
@@ -221,10 +210,34 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.attr("transform", "translate( " + width + ", 0 )")
 	    	.call(d3.axisRight(y1));
 
+	    // add title
+        svg.append("text")
+        	.attr("class", "line-chart-text")
+            .attr("text-anchor", "start")
+            .attr("x", -padding)
+            .attr("y", -padding)
+            .text("Average Approval Rating vs. Average Speech Sentiment");
+
+        // Add x axis label
+        svg.append("text")
+		    .attr("class", "x label")
+		    .attr("text-anchor", "end")
+		    .attr("x", width)
+		    .attr("y", height + 25)
+		    .text("Date");
+
+		// Add y axis label
+		svg.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "end")
+		    .attr("y", -padding*1.5)
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("Sentiment Score");
 	};
 
 	////////////////////////////////////////////////
-	//   Logistic Regression Scatter Plot
+	//   Linear Regression Scatter Plot
 	////////////////////////////////////////////////
 
 	var regressionScatter = function() {
@@ -288,6 +301,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 		var input = d3.select("input");
 		var svg = d3.select("#chart9").append("svg");
+
 		var g = svg.append("g");
 
 		var x_axis = g.append("g");
@@ -307,8 +321,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		function draw(resizing, adjusting){
 		  if (resizing){
 		    //width = window.innerWidth - margin.left - margin.right;
-		    width = 1000 - margin.left - margin.right;
-		    height = d3.min([window.innerHeight, (width * aspect_ratio)]) - margin.top - margin.bottom;
+		    //width = 1000 - margin.left - margin.right;
+		    //height = d3.min([window.innerHeight, (width * aspect_ratio)]) - margin.top - margin.bottom;
+		    width = 500 - margin.left - margin.right;
+	    	height = 350 - margin.top - margin.bottom;
 
 		    x_scale.range([0, width]);
 		    y_scale.range([height, 0]);
@@ -317,8 +333,10 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    y_axis_generator.scale(y_scale);
 
 		    svg
-		        .attr("width", width + margin.left + margin.right)
-		        .attr("height", height + margin.top + margin.bottom);
+		    	.attr("preserveAspectRatio", "xMinYMin meet")
+	    		.attr("viewBox", "0 0 500 350");
+		        //.attr("width", width + margin.left + margin.right)
+		        //.attr("height", height + margin.top + margin.bottom);
 
 		    g.attr("transform", "translate(" + [margin.left, margin.top] + ")");
 

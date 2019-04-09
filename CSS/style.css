@@ -171,8 +171,6 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	max-width: 50%;
 }
 
-
-
 #chart6-container {
 	background-color: #fff;
 	margin-right: 7.5px;
@@ -242,10 +240,9 @@ padding: 7.5px 7.5px 7.5px 7.5px;
   stroke-width: 3px;
 }
 
-
 .loess-line {
 	fill: none;
-	stroke-width: 2px;
+	stroke-width: 3px;
 	stroke: steelblue;
 }
 
