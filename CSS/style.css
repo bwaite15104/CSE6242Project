@@ -248,6 +248,10 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	stroke: steelblue;
 }
 
+#bandwidth {
+	padding-left: 20px;
+}
+
 @media (min-width: 992px)
 #chart9-container {
 	flex-grow: 0;
@@ -498,4 +502,13 @@ polyline {
 
 #chart8-container .grid path {
       stroke-width: 0;
+}
+
+.axis-label {
+	font-size: 0.6vw;
+	font-weight: 400;
+	color: #383838;
+	font-family: sans-serif;
+	padding: 0px 0px 0px 15px;
+	margin: 7.5px 0px 2.5px 0px;
 }
