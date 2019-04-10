@@ -144,9 +144,9 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortDate);
 
 		// set margins and padding
-		var margin = {top: 30, right: 30, bottom: 20, left: 30},
+		var margin = {top: 50, right: 30, bottom: 30, left: 45},
 	    	width = 500 - margin.left - margin.right,
-	    	height = 350 - margin.top - margin.bottom,
+	    	height = 500 - margin.top - margin.bottom,
 	    	padding = 20;
 
 	    // set the ranges
@@ -156,11 +156,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 		// define the 1st line
 		var valueline = d3.line()
+			.curve(d3.curveBasis) 
 		    .x(function(d) { return x(d.month); })
 		    .y(function(d) { return y0(d.avg_sentiment); });
 
 		// define the 2nd line
 		var valueline2 = d3.line()
+			.curve(d3.curveBasis) 
 		    .x(function(d) { return x(d.month); })
 		    .y(function(d) { return y1(d.avg_approval); });
 
@@ -169,7 +171,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// moves the 'group' element to the top left margin
 		var svg = d3.select("#chart7").append("svg")
 	    	.attr("preserveAspectRatio", "xMinYMin meet")
-	    	.attr("viewBox", "0 0 500 350")
+	    	.attr("viewBox", "0 0 500 500")
 		  .append("g")
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
@@ -184,7 +186,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	svg.append("path")
 	    	.data([monthly_time_series_filtered])
 	      	.attr("class", "line")
-	      	.style("stroke-width", '1px')
+	      	.style("stroke-width", '3px')
 	      	.attr("d", valueline);
 
 	  	// Add the valueline2 path.
@@ -192,7 +194,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
       		.data([monthly_time_series_filtered])
       		.attr("class", "line")
       		.style("stroke", "red")
-      		.style("stroke-width", '1px')
+      		.style("stroke-width", '3px')
       		.attr("d", valueline2);
 
 	  	// Add the X Axis
@@ -211,30 +213,31 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	.attr("transform", "translate( " + width + ", 0 )")
 	    	.call(d3.axisRight(y1));
 
-	    // add title
+        // add title
         svg.append("text")
-        	.attr("class", "line-chart-text")
+        	.attr("class", "summary-text-top")
             .attr("text-anchor", "start")
             .attr("x", -padding)
             .attr("y", -padding)
-            .text("Average Approval Rating vs. Average Speech Sentiment");
+            .text("Top Words Used in Speech");
 
         // Add x axis label
         svg.append("text")
 		    .attr("class", "x label")
 		    .attr("text-anchor", "end")
 		    .attr("x", width)
-		    .attr("y", height + 25)
+		    .attr("y", height + 30)
 		    .text("Date");
 
 		// Add y axis label
 		svg.append("text")
 		    .attr("class", "y label")
 		    .attr("text-anchor", "end")
-		    .attr("y", -padding*1.5)
+		    .attr("y", -padding*2)
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("Sentiment Score");
+		    
 	};
 
 	/////////////////////////////////////////////////
@@ -744,23 +747,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    };
 
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortApproval);
-/*
-		// set margins and padding
-		var margin = {top: 30, right: 30, bottom: 20, left: 30},
-	    	width = 500 - margin.left - margin.right,
-	    	height = 250 - margin.top - margin.bottom,
-	    	padding = 20;
 
-		// append the svg object to the body of the page
-		// appends a 'group' element to 'svg'
-		// moves the 'group' element to the top left margin
-		var svg = d3.select("#chart9").append("svg")
-	    	.attr("preserveAspectRatio", "xMinYMin meet")
-	    	.attr("viewBox", "0 0 500 250")
-		  .append("g")
-		    .attr("transform",
-		          "translate(" + margin.left + "," + margin.top + ")");
-*/
 		var x_property = "avg_approval", y_property = "avg_sentiment";
 
 		var margin = {left: 30, right: 5, top: 5, bottom: 20},
@@ -804,7 +791,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    //width = 1000 - margin.left - margin.right;
 		    //height = d3.min([window.innerHeight, (width * aspect_ratio)]) - margin.top - margin.bottom;
 		    width = 500 - margin.left - margin.right;
-	    	height = 350 - margin.top - margin.bottom;
+	    	height = 200 - margin.top - margin.bottom;
 
 		    x_scale.range([0, width]);
 		    y_scale.range([height, 0]);
@@ -814,7 +801,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 		    svg
 		    	.attr("preserveAspectRatio", "xMinYMin meet")
-	    		.attr("viewBox", "0 0 500 350");
+	    		.attr("viewBox", "0 0 500 200");
 		        //.attr("width", width + margin.left + margin.right)
 		        //.attr("height", height + margin.top + margin.bottom);
 

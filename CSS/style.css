@@ -153,8 +153,6 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	max-width: 50%;
 }
 
-
-
 #chart5-container {
 	background-color: #fff;
 	margin-right: 7.5px;
@@ -240,6 +238,10 @@ padding: 7.5px 7.5px 7.5px 7.5px;
   stroke-width: 3px;
 }
 
+#chart9 circle {
+	fill: #33adff;
+	opacity: 0.4;
+}
 .loess-line {
 	fill: none;
 	stroke-width: 3px;
