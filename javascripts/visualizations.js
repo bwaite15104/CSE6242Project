@@ -192,7 +192,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	svg.append("path")
       		.data([monthly_time_series_filtered])
       		.attr("class", "line")
-      		.style("stroke", "red")
+      		.style("stroke", "steelblue")
       		.style("stroke-width", '3px')
       		.attr("d", valueline2);
 
@@ -247,19 +247,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("Approval Rating");
-
-		/*
-
-
-		d3.select("#chart8 svg").append("text")
-		.attr("class", "yr label")
-		.attr("text-anchor", "center")
-		.attr("x", -height/2 - margin.bottom)
-		.attr("y", width + margin.left + 33	)
-		.attr("dy", ".75em")
-		.attr("transform", "rotate(-90)")
-		.text("Average Speech Sentiment");
-*/
 		    
 	};
 
@@ -392,7 +379,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
 
-		//
 		// Axis Labels
 		d3.select("#chart8 svg").append("text")
 		.attr("class", "x label")
@@ -746,23 +732,36 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	//   Linear Regression Scatter Plot
 	////////////////////////////////////////////////
 
-	var regressionScatter = function() {
+	var regressionScatter = function(selector_names) {
 
 		// Filter NA values in avg approval for complete regression data set
-		var monthly_time_series_filtered = monthly_time_series_viz_data_approvals.filter(function(d) {
-			//return d.president != 'BARACK OBAMA';
+		monthly_time_series = monthly_time_series_viz_data_approvals.filter(function(d) {
 			return !isNaN(d.avg_approval);
 		});
 
-		var monthly_time_series_filtered = monthly_time_series_filtered.filter(function(d) {
-			//return d.president != 'BARACK OBAMA';
+		monthly_time_series = monthly_time_series.filter(function(d) {
 			return d.avg_sentiment >= 0.0;
 		});
 
-		var monthly_time_series_filtered = monthly_time_series_filtered.filter(function(d) {
+		monthly_time_series = monthly_time_series.filter(function(d) {
 			//return d.president != 'BARACK OBAMA';
 			return !isNaN(d.avg_sentiment);
 		});
+
+		var monthly_time_series_filtered = [];
+		for (var i = 0; i < selector_names.length; i++) {
+			for (var j = 0; j < monthly_time_series.length; j++) {
+				if (selector_names[i] == monthly_time_series[j].president) {
+					monthly_time_series_filtered.push(monthly_time_series[j]);
+				}
+			}
+		}
+
+		if (monthly_time_series_filtered.length == 0) {
+			for (var j = 0; j < monthly_time_series.length; j++) {
+				monthly_time_series_filtered.push(monthly_time_series[j]);
+			}
+		}
 
 		// sort by date
 	    var sortApproval = function(a, b) {
@@ -770,6 +769,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    };
 
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortApproval);
+
 
 		var x_property = "avg_approval", y_property = "avg_sentiment";
 
@@ -1253,7 +1253,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     donutViz(selector_names_init);
 	monthlyTimeSeries1(selector_names_init);
 	monthlyTimeSeries2(selector_names_init);
-	regressionScatter();
+	regressionScatter(selector_names_init);
 
     // make year picker
   	var nameSelector = d3.select("#selector")
@@ -1300,12 +1300,15 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8header").selectAll("p").remove();
 								d3.selectAll("#chart8header").selectAll("svg").remove();
 								d3.selectAll("#chart8").selectAll("svg").remove();
+								d3.selectAll("#chart9header").selectAll("p").remove();
+								d3.selectAll("#chart9").selectAll("svg").remove();
 
 						    	topline_metrics_charts(selector_names);
 						    	barViz(selector_names);
 						    	donutViz(selector_names);
 						    	monthlyTimeSeries1(selector_names);
 						    	monthlyTimeSeries2(selector_names);
+						    	regressionScatter(selector_names);
 
 							});
 
@@ -1331,6 +1334,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8header").selectAll("p").remove();
 								d3.selectAll("#chart8header").selectAll("svg").remove();
 								d3.selectAll("#chart8").selectAll("svg").remove();
+								d3.selectAll("#chart9header").selectAll("p").remove();
+								d3.selectAll("#chart9").selectAll("svg").remove();
 
 								// if all items are removed, revert to default
 								if (selector_names.length != 0) {
@@ -1340,6 +1345,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    	donutViz(selector_names);
 							    	monthlyTimeSeries1(selector_names);
 							    	monthlyTimeSeries2(selector_names);
+							    	regressionScatter(selector_names);
 							    } else {
 									// initialize selector
 								    topline_metrics_charts(selector_names_init);
@@ -1347,6 +1353,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								    donutViz(selector_names_init);
 									monthlyTimeSeries1(selector_names_init);
 									monthlyTimeSeries2(selector_names_init);
+									regressionScatter(selector_names_init);
 							    }
 							});
 
@@ -1366,6 +1373,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8header").selectAll("p").remove();
 								d3.selectAll("#chart8header").selectAll("svg").remove();
 								d3.selectAll("#chart8").selectAll("svg").remove();
+								d3.selectAll("#chart9header").selectAll("p").remove();
+								d3.selectAll("#chart9").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(selector_names_init);
@@ -1373,6 +1382,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    donutViz(selector_names_init);
 								monthlyTimeSeries1(selector_names_init);
 								monthlyTimeSeries2(selector_names_init);
+								regressionScatter(selector_names_init);
 							})
 
 							// select all selector button
@@ -1398,6 +1408,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8header").selectAll("p").remove();
 								d3.selectAll("#chart8header").selectAll("svg").remove();
 								d3.selectAll("#chart8").selectAll("svg").remove();
+								d3.selectAll("#chart9header").selectAll("p").remove();
+								d3.selectAll("#chart9").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(presidents);
@@ -1405,6 +1417,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    donutViz(presidents);
 								monthlyTimeSeries1(presidents);
 								monthlyTimeSeries2(presidents);
+								regressionScatter(presidents);
 							})
 
 							// select last five presidents button
@@ -1431,6 +1444,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8header").selectAll("p").remove();
 								d3.selectAll("#chart8header").selectAll("svg").remove();
 								d3.selectAll("#chart8").selectAll("svg").remove();
+								d3.selectAll("#chart9header").selectAll("p").remove();
+								d3.selectAll("#chart9").selectAll("svg").remove();
 
 								// initialize selector
 							    topline_metrics_charts(last_five_presidents);
@@ -1438,6 +1453,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 							    donutViz(last_five_presidents);
 								monthlyTimeSeries1(last_five_presidents);
 								monthlyTimeSeries2(last_five_presidents);
+								regressionScatter(last_five_presidents);
 							})
 						});
 
