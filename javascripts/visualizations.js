@@ -144,7 +144,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortDate);
 
 		// set margins and padding
-		var margin = {top: 50, right: 30, bottom: 30, left: 45},
+		var margin = {top: 50, right: 50, bottom: 30, left: 45},
 	    	width = 500 - margin.left - margin.right,
 	    	height = 500 - margin.top - margin.bottom,
 	    	padding = 20;
@@ -180,7 +180,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	x.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.month; }));
 	  	y0.domain(d3.extent(monthly_time_series_filtered, function(d) { return d.avg_sentiment; }));
 	  	y1.domain([0, 1]);
-	  	//y1.domain([0, d3.max(monthly_time_series_filtered, function(d) { return Math.max(d.avg_approval); }) ]);
 
 	  	  // Add the valueline path.
 	  	svg.append("path")
@@ -225,18 +224,42 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
         svg.append("text")
 		    .attr("class", "x label")
 		    .attr("text-anchor", "end")
-		    .attr("x", width)
+		    .attr("x", margin.left + width/2)
 		    .attr("y", height + 30)
 		    .text("Date");
 
 		// Add y axis label
 		svg.append("text")
 		    .attr("class", "y label")
-		    .attr("text-anchor", "end")
+		    .attr("text-anchor", "center")
+		    .attr("x", -height/2 - margin.bottom)
 		    .attr("y", -padding*2)
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("Sentiment Score");
+
+		// Add y2 axis label
+		svg.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "center")
+		    .attr("x", -height/2 - margin.bottom)
+		    .attr("y", width + margin.left - 10)
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("Approval Rating");
+
+		/*
+
+
+		d3.select("#chart8 svg").append("text")
+		.attr("class", "yr label")
+		.attr("text-anchor", "center")
+		.attr("x", -height/2 - margin.bottom)
+		.attr("y", width + margin.left + 33	)
+		.attr("dy", ".75em")
+		.attr("transform", "rotate(-90)")
+		.text("Average Speech Sentiment");
+*/
 		    
 	};
 
@@ -853,27 +876,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		d3.select("#chart9header").append("p")
 	  		.text("Linear Regression of Sentiment vs. Approval")
 	  		.attr("class", "summary-text-top");
-/*
-
-
-		d3.select("#chart8 svg").append("text")
-		.attr("class", "y label")
-		.attr("text-anchor", "center")
-		.attr("x", -height/2 - margin.bottom)
-		.attr("y", 7)
-		.attr("dy", ".75em")
-		.attr("transform", "rotate(-90)")
-		.text("Econometric Percent Change");
-
-		d3.select("#chart8 svg").append("text")
-		.attr("class", "yr label")
-		.attr("text-anchor", "center")
-		.attr("x", -height/2 - margin.bottom)
-		.attr("y", width + margin.left + 33	)
-		.attr("dy", ".75em")
-		.attr("transform", "rotate(-90)")
-		.text("Average Speech Sentiment");
-*/
 	};
 
 
