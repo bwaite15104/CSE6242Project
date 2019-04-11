@@ -114,7 +114,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	// Create parse data format
 	var format = d3.timeParse("%Y-%m-%d");
-	//format.parse("2011-01-01"); // returns a Date
 
 	// format data
 	monthly_time_series_viz_data_approvals.forEach(function(d) {
@@ -143,11 +142,16 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortDate);
 
+	    console.log(monthly_time_series_filtered);
+
 		// set margins and padding
 		var margin = {top: 50, right: 50, bottom: 30, left: 45},
 	    	width = 500 - margin.left - margin.right,
 	    	height = 500 - margin.top - margin.bottom,
 	    	padding = 20;
+
+	    // Legend variables
+		var color = d3.scaleOrdinal(["#000000", "#8dd3c7"]);
 
 	    // set the ranges
 		var x = d3.scaleTime().range([0, width]);
@@ -199,7 +203,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	// Add the X Axis
 	  	svg.append("g")
 	    	.attr("transform", "translate(0," + height + ")")
-	    	.call(d3.axisBottom(x));
+	    	.call(d3.axisBottom(x)
+	    		.tickFormat(d3.timeFormat("%Y")));
 
 	  	// Add the Y0 Axis
 	  	svg.append("g")
@@ -218,7 +223,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
             .attr("text-anchor", "start")
             .attr("x", -padding)
             .attr("y", -padding)
-            .text("Top Words Used in Speech");
+            .text("Monthly Sentiment vs. Approval");
 
         // Add x axis label
         svg.append("text")
@@ -247,7 +252,35 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("Approval Rating");
-		    
+/*
+		// draw legend
+		var legend = svg.selectAll(".legend")
+		  .data(color.domain())
+		.enter().append("g")
+		  .attr("class", "legend")
+		  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+		// draw legend colored rectangles
+		legend.append("rect")
+		  .attr("x", width - 18)
+		  .attr("width", 18)
+		  .attr("height", 18)
+		  .style("fill", color);
+
+		// draw legend text
+		legend.append("text")
+		  .attr("x", width - 24)
+		  .attr("y", 9)
+		  .attr("dy", ".35em")
+		  .style("text-anchor", "end")
+		  .text(function(d,i) {
+		  	if (i == 0) {
+		  		return "Speech Sentiment"
+		  	} else {
+		  		return "Approval Rating"
+		  	}
+		  });
+*/
 	};
 
 	/////////////////////////////////////////////////
