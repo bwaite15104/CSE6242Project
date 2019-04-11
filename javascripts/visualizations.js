@@ -142,8 +142,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 
 	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortDate);
 
-	    console.log(monthly_time_series_filtered);
-
 		// set margins and padding
 		var margin = {top: 50, right: 50, bottom: 30, left: 45},
 	    	width = 500 - margin.left - margin.right,
