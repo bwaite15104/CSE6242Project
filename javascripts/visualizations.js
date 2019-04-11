@@ -12,6 +12,7 @@ var promises = [
   d3.csv("data/presidential_topics.csv"),
   d3.csv("data/monthly_time_series_viz_data_approvals.csv"),
   d3.csv("data/sentiment_vs_economics.csv")
+  d3.csv("data/speech_emotion_for_model_syuzhet.csv")
 ]
 
 Promise.all(promises).then(ready)
