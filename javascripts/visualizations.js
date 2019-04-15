@@ -822,6 +822,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 			.y(d => y_scale(d[y_property]));
 
 		var input = d3.select("input");
+
 		var svg = d3.select("#chart9").append("svg");
 
 		var g = svg.append("g");
@@ -883,9 +884,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 			    .attr("transform", "rotate(-90)")
 			    .text("Sentiment Score");
 		  }
-		  
+
 		  if (adjusting){
 		    var new_bandwidth = input.property("value") / 100;
+		    if (new_bandwidth == 0) {
+		    	new_bandwidth = 0.25;
+		    }
+		    
 		    d3.select(".bandwidth").html(new_bandwidth.toFixed(2));
 		    loess_generator.bandwidth(new_bandwidth);
 		    loess_values = loess_generator(x_values, y_values);
@@ -902,8 +907,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		}
 
 		draw(1, 1);
-			window.addEventListener("resize", _ => draw(1, 0));
-			input.on("input", _ => draw(0, 1));
+		window.addEventListener("resize", _ => draw(1, 0));
+		input.on("input", _ => draw(0, 1));
 
 		d3.select("#chart9header").append("p")
 	  		.text("Linear Regression of Sentiment vs. Approval")
