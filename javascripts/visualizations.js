@@ -776,7 +776,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		});
 
 		monthly_time_series = monthly_time_series.filter(function(d) {
-			//return d.president != 'BARACK OBAMA';
 			return !isNaN(d.avg_sentiment);
 		});
 
@@ -787,13 +786,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 					monthly_time_series_filtered.push(monthly_time_series[j]);
 				}
 			}
-		}
+		};
 
 		if (monthly_time_series_filtered.length == 0) {
 			for (var j = 0; j < monthly_time_series.length; j++) {
 				monthly_time_series_filtered.push(monthly_time_series[j]);
 			}
-		}
+		};
 
 		// sort by date
 	    var sortApproval = function(a, b) {
@@ -886,12 +885,12 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		  }
 
 		  if (adjusting){
-		    var new_bandwidth = input.property("value") / 100;
-		    if (new_bandwidth == 0) {
-		    	new_bandwidth = 0.25;
-		    }
-		    
-		    d3.select(".bandwidth").html(new_bandwidth.toFixed(2));
+		    //var new_bandwidth = input.property("value") / 100;
+			var new_bandwidth = +document.getElementById('slider').value;
+			new_bandwidth = new_bandwidth / 100;
+		    //console.log(new_bandwidth);
+		    console.log(x_values);
+		    d3.select(".bandwidth").text(new_bandwidth.toFixed(2));
 		    loess_generator.bandwidth(new_bandwidth);
 		    loess_values = loess_generator(x_values, y_values);
 		    loess_data = monthly_time_series_filtered.map((d, i) => ({avg_approval: d[x_property], avg_sentiment: loess_values[i]}));
@@ -904,7 +903,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		      .attr("class", "loess-line")
 		    .merge(loess_line)
 		      .attr("d", line_generator);
-		}
+		};
 
 		draw(1, 1);
 		window.addEventListener("resize", _ => draw(1, 0));
@@ -1483,6 +1482,8 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8").selectAll("svg").remove();
 								d3.selectAll("#chart9header").selectAll("p").remove();
 								d3.selectAll("#chart9").selectAll("svg").remove();
+
+								//$("#slider").slider("value", $("#slider").slider("option", "min") );
 
 								// initialize selector
 							    topline_metrics_charts(last_five_presidents);
