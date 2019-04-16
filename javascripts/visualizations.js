@@ -812,7 +812,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		  .enter().append("circle")
 		    .attr("r", 3);
 
-		function draw(resizing, adjusting){
+		draw = function(resizing, adjusting){
 		  if (resizing){
 		    width = 500 - margin.left - margin.right;
 	    	height = 200 - margin.top - margin.bottom;
@@ -1036,15 +1036,15 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
     		.attr("y", function(d) {return yScale(d.word) + yScale.bandwidth() / 2 + 4;})
     		.attr("x", function(d) {
 				if (xScale(d.word_count) <= 30) {
-					return padding1*1.5;
+					return xScale(d.word_count)+10;
 				} else if (xScale(d.word_count) <= 50) {
-					return xScale(d.word_count) - padding1*1.4;
+					return xScale(d.word_count) - padding1*1.9;
     			} else if (xScale(d.word_count) <= 100) {
-					return xScale(d.word_count) - padding1*1.6;
+					return xScale(d.word_count) - padding1*1.9;
 				} else if (xScale(d.word_count) <= 150) {
 					return xScale(d.word_count) - padding1*1.9;
 				} else {
-    				return xScale(d.word_count) - padding1*2.1;
+    				return xScale(d.word_count) - padding1*2.3;
     			}})
     		.style("fill", function(d) {
     			if ((xScale(d.word_count) - padding1*1.5) <= 0) {
