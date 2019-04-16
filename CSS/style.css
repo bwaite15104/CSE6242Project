@@ -2,13 +2,15 @@
 /* The sidebar menu */
 .sidenav {
   height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 240px; /* Set the width of the sidebar */
+  width: 200px; /* Set the width of the sidebar */
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   top: 0; /* Stay at the top */	
   left: 0;
   background-color: #323f51; /* Black */
   overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 75px;
+  padding-top: 100px;
+  border-right: 8px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.10), 2px 3px 1px rgba(0, 0, 0, 0.15);
 }
 
 /* The navigation menu links */
@@ -29,34 +31,34 @@
 
 
 body {
-	margin-left: 240px;
+	margin-left: 220px;
 	margin-top: 75px;
 	background-color: #edf2f6;
 }
 
 .chart-row-1 {
 	display: flex;
-	padding: 15px 7.5px 7.5px 7.5px;
+	padding: 7.5px;
 }
 
 .chart-row-2 {
 display: flex;
-padding: 7.5px 7.5px 7.5px 7.5px;
+padding: 7.5px;
 }
 
 .chart-row-3 {
 display: flex;
-padding: 7.5px 7.5px 7.5px 7.5px;
+padding: 7.5px;
 }
 
 .chart-row-4 {
 display: flex;
-padding: 7.5px 7.5px 7.5px 7.5px;
+padding: 7.5px;
 }
 
 .chart-row-5 {
 display: flex;
-padding: 7.5px 7.5px 7.5px 7.5px;
+padding: 7.5px;
 }
 
 .header {
