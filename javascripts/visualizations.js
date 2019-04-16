@@ -778,7 +778,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		monthly_time_series = monthly_time_series.filter(function(d) {
 			return !isNaN(d.avg_sentiment);
 		});
-
+/*
 		var monthly_time_series_filtered = [];
 		for (var i = 0; i < selector_names.length; i++) {
 			for (var j = 0; j < monthly_time_series.length; j++) {
@@ -793,14 +793,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				monthly_time_series_filtered.push(monthly_time_series[j]);
 			}
 		};
-
+*/
 		// sort by date
 	    var sortApproval = function(a, b) {
 	    	return a.avg_approval - b.avg_approval;
 	    };
 
-	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortApproval);
-
+	    monthly_time_series_filtered = monthly_time_series.sort(sortApproval);
 
 		var x_property = "avg_approval", y_property = "avg_sentiment";
 
@@ -888,8 +887,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		    //var new_bandwidth = input.property("value") / 100;
 			var new_bandwidth = +document.getElementById('slider').value;
 			new_bandwidth = new_bandwidth / 100;
-		    //console.log(new_bandwidth);
-		    console.log(x_values);
 		    d3.select(".bandwidth").text(new_bandwidth.toFixed(2));
 		    loess_generator.bandwidth(new_bandwidth);
 		    loess_values = loess_generator(x_values, y_values);
@@ -1482,8 +1479,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 								d3.selectAll("#chart8").selectAll("svg").remove();
 								d3.selectAll("#chart9header").selectAll("p").remove();
 								d3.selectAll("#chart9").selectAll("svg").remove();
-
-								//$("#slider").slider("value", $("#slider").slider("option", "min") );
 
 								// initialize selector
 							    topline_metrics_charts(last_five_presidents);
