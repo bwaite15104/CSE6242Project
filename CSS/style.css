@@ -114,7 +114,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	border: 8px solid rgba(0, 0, 0, 0.1);
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -131,6 +131,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -148,6 +149,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -164,6 +166,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -180,6 +183,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -196,6 +200,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 #chart7 .line {
@@ -218,6 +223,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -235,6 +241,7 @@ padding: 7.5px 7.5px 7.5px 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
+	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 #chart9 .line {
