@@ -149,9 +149,6 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	    	height = 500 - margin.top - margin.bottom,
 	    	padding = 20;
 
-	    // Legend variables
-		var color = d3.scaleOrdinal(["#000000", "#8dd3c7"]);
-
 	    // set the ranges
 		var x = d3.scaleTime().range([0, width]);
 		var y0 = d3.scaleLinear().range([height, 0]);
@@ -208,11 +205,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	  	// Add the Y0 Axis
 	  	svg.append("g")
 	    	.attr("class", "axisSteelBlue")
+	    	.style("color", "#33adff")
 	    	.call(d3.axisLeft(y0));
 
 	  	// Add the Y1 Axis
 	  	svg.append("g")
 	    	.attr("class", "axisRed")
+	    	.style("color", "steelblue")
 	    	.attr("transform", "translate( " + width + ", 0 )")
 	    	.call(d3.axisRight(y1));
 
@@ -235,6 +234,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// Add y axis label
 		svg.append("text")
 		    .attr("class", "y label")
+		    .style("fill", "#33adff")
 		    .attr("text-anchor", "center")
 		    .attr("x", -height/2 - margin.bottom)
 		    .attr("y", -padding*2)
@@ -245,41 +245,14 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		// Add y2 axis label
 		svg.append("text")
 		    .attr("class", "y label")
+		    .style("fill", "steelblue")
 		    .attr("text-anchor", "center")
 		    .attr("x", -height/2 - margin.bottom)
 		    .attr("y", width + margin.left - 10)
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("Approval Rating");
-/*
-		// draw legend
-		var legend = svg.selectAll(".legend")
-		  .data(color.domain())
-		.enter().append("g")
-		  .attr("class", "legend")
-		  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-		// draw legend colored rectangles
-		legend.append("rect")
-		  .attr("x", width - 18)
-		  .attr("width", 18)
-		  .attr("height", 18)
-		  .style("fill", color);
-
-		// draw legend text
-		legend.append("text")
-		  .attr("x", width - 24)
-		  .attr("y", 9)
-		  .attr("dy", ".35em")
-		  .style("text-anchor", "end")
-		  .text(function(d,i) {
-		  	if (i == 0) {
-		  		return "Speech Sentiment"
-		  	} else {
-		  		return "Approval Rating"
-		  	}
-		  });
-*/
 	};
 
 	/////////////////////////////////////////////////
