@@ -99,7 +99,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -117,7 +116,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -134,7 +132,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -152,7 +149,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -169,7 +165,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -186,7 +181,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -203,7 +197,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 #chart7 .line {
@@ -226,7 +219,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 @media (min-width: 992px)
@@ -244,7 +236,6 @@ padding: 7.5px;
 	margin-left: 7.5px;
 	width: 100%;
 	border-radius: 5px;
-	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.16), 2px 3px 1px rgba(0, 0, 0, 0.23);
 }
 
 #chart9 .line {
@@ -352,9 +343,15 @@ padding: 7.5px;
 	display: inline-block;
 	font-size: 16px;
 	cursor: pointer;
+	transition-duration: 0.4s;
   }
 
-/* reset button position */
+#reset:hover {
+  color: DodgerBlue;
+  background-color: white;
+}
+
+/* selectall button */
 #selectAll {
   	padding: 5px;
   	margin-left: 5px;
@@ -370,7 +367,13 @@ padding: 7.5px;
 	display: inline-block;
 	font-size: 16px;
 	cursor: pointer;
+	transition-duration: 0.4s;
   }
+
+#selectAll:hover {
+  color: DodgerBlue;
+  background-color: white;
+}
 
 /* select last 5 presidents */
 #selectLastFive {
@@ -386,8 +389,13 @@ padding: 7.5px;
 	display: inline-block;
 	font-size: 16px;
 	cursor: pointer;
+	transition-duration: 0.4s;
   }
-
+  
+#selectLastFive:hover {
+  color: DodgerBlue;
+  background-color: white;
+}
 	.bar-text {
 		font-size: 1.5rem;
 		font-family: sans-serif;
