@@ -751,7 +751,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 		monthly_time_series = monthly_time_series.filter(function(d) {
 			return !isNaN(d.avg_sentiment);
 		});
-/*
+
 		var monthly_time_series_filtered = [];
 		for (var i = 0; i < selector_names.length; i++) {
 			for (var j = 0; j < monthly_time_series.length; j++) {
@@ -766,13 +766,13 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 				monthly_time_series_filtered.push(monthly_time_series[j]);
 			}
 		};
-*/
+
 		// sort by date
 	    var sortApproval = function(a, b) {
 	    	return a.avg_approval - b.avg_approval;
 	    };
 
-	    monthly_time_series_filtered = monthly_time_series.sort(sortApproval);
+	    monthly_time_series_filtered = monthly_time_series_filtered.sort(sortApproval);
 
 		var x_property = "avg_approval", y_property = "avg_sentiment";
 
@@ -1251,7 +1251,7 @@ function ready([speech_polarity_and_diversity, top_20_words_by_president, presid
 	};
 
 	// initialize selector_names with only one name
-	var selector_names_init = ["ABRAHAM LINCOLN"];
+	var selector_names_init = ["BARACK OBAMA"];
 
 	// initialize selector
     topline_metrics_charts(selector_names_init);
