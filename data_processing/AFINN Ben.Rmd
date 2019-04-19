@@ -1,0 +1,88 @@
+---
+title: "AFINN Script"
+author: "Nathan Kurlansik"
+date: "March 24, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r cars}
+library(tidytext)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(RCurl)
+library(syuzhet)
+# read in data
+# list of every president
+president_list <- c('GEORGE WASHINGTON', 'JOHN ADAMS', 'THOMAS JEFFERSON', 'JAMES MADISON', 'JAMES MONROE', 'JOHN QUINCY ADAMS', 'ANDREW JACKSON',
+    'MARTIN VAN BUREN', 'WILLIAM HENRY HARRISON', 'JOHN TYLER', 'JAMES K. POLK', 'ZACHARY TAYLOR', 'MILLARD FILLMORE', 'FRANKLIN PIERCE', 'JAMES BUCHANAN',
+    'ABRAHAM LINCOLN', 'ANDREW JOHNSON', 'ULYSSES S. GRANT', 'RUTHERFORD B. HAYES', 'JAMES A. GARFIELD', 'CHESTER A. ARTHUR', 'GROVER CLEVELAND',
+    'BENJAMIN HARRISON', 'WILLIAM MCKINLEY', 'THEODORE ROOSEVELT', 'WILLIAM HOWARD TAFT', 'WOODROW WILSON', 'WARREN G. HARDING', 'CALVIN COOLIDGE',
+    'HERBERT HOOVER', 'FRANKLIN D. ROOSEVELT', 'HARRY S. TRUMAN', 'DWIGHT D. EISENHOWER', 'JOHN F. KENNEDY', 'LYNDON B. JOHNSON', 'RICHARD NIXON',
+    'GERALD R. FORD', 'JIMMY CARTER', 'RONALD REAGAN', 'GEORGE BUSH', 'WILLIAM J. CLINTON', 'GEORGE W. BUSH', 'BARACK OBAMA', 'DONALD J. TRUMP')
+
+# read in data
+all_speeches <- read_csv('all_presidential_speeches.csv') %>%
+select(-X1) %>%
+filter(president_name %in% president_list) 
+
+# clean president names for consistency with other data
+all_speeches$president_name[all_speeches$president_name=='DONALD J. TRUMP'] <- 'DONALD TRUMP'
+all_speeches$president_name[all_speeches$president_name=='WILLIAM J. CLINTON'] <- 'BILL CLINTON'
+all_speeches$president_name[all_speeches$president_name=='GERALD R. FORD'] <- 'GERALD FORD'
+
+# Unnest the text strings into a data frame of words
+speech_words <- all_speeches %>%
+unnest_tokens(word, speech_text) %>% # split into individual words
+anti_join(get_stopwords()) 
+
+# get polarity sentiments of presidents
+#bing <- get_sentiments("bing")
+afinn<-get_sentiments("afinn")
+speech_polarity_sentiment <- speech_words %>%
+inner_join(afinn) %>%
+select(-word) %>%	
+count(president_name, speech_date, speech_type, score) %>%
+spread(score, n) 
+
+
+
+speech_polarity_sentiment <- speech_polarity_sentiment %>% 
+                            group_by(president_name, speech_date, speech_type) %>% 
+                              summarise(sentiment=mean(score),
+                                        sum_score=sum(score))
+
+
+
+# get speech diversity
+speech_diversity <- speech_words %>%
+select(president_name, speech_date, speech_type, word) %>%
+distinct() %>%
+select(-word) %>%
+count(president_name, speech_date, speech_type) %>%
+rename(speech_diversity = n)
+
+# join dataframes for complete set
+speech_data_clean <- speech_polarity_sentiment %>%
+left_join(speech_diversity, by=c("president_name", "speech_date", "speech_type"))
+
+# summarize data for visualition
+speech_data_summarize <- speech_data_clean %>%
+select(president_name, negative, positive, speech_diversity) %>%
+group_by(president_name) %>%
+summarize(negative = mean(negative),
+		positive = mean(positive),
+		speech_diversity = mean(speech_diversity)) %>%
+mutate(sentiment = positive - negative)
+
+# write csv
+write.csv(speech_data_clean, 'speech_polarity_for_model_AFINN.csv')
+#write.csv(speech_data_summarize, 'data/speech_polarity_and_diversity.csv')
+```
