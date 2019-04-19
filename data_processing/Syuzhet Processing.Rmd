@@ -1,0 +1,96 @@
+---
+title: "Syuzhet Script"
+author: "Nathan Kurlansik"
+date: "March 24, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(tidytext)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(RCurl)
+library(syuzhet)
+# read in data
+# list of every president
+president_list <- c('GEORGE WASHINGTON', 'JOHN ADAMS', 'THOMAS JEFFERSON', 'JAMES MADISON', 'JAMES MONROE', 'JOHN QUINCY ADAMS', 'ANDREW JACKSON',
+    'MARTIN VAN BUREN', 'WILLIAM HENRY HARRISON', 'JOHN TYLER', 'JAMES K. POLK', 'ZACHARY TAYLOR', 'MILLARD FILLMORE', 'FRANKLIN PIERCE', 'JAMES BUCHANAN',
+    'ABRAHAM LINCOLN', 'ANDREW JOHNSON', 'ULYSSES S. GRANT', 'RUTHERFORD B. HAYES', 'JAMES A. GARFIELD', 'CHESTER A. ARTHUR', 'GROVER CLEVELAND',
+    'BENJAMIN HARRISON', 'WILLIAM MCKINLEY', 'THEODORE ROOSEVELT', 'WILLIAM HOWARD TAFT', 'WOODROW WILSON', 'WARREN G. HARDING', 'CALVIN COOLIDGE',
+    'HERBERT HOOVER', 'FRANKLIN D. ROOSEVELT', 'HARRY S. TRUMAN', 'DWIGHT D. EISENHOWER', 'JOHN F. KENNEDY', 'LYNDON B. JOHNSON', 'RICHARD NIXON',
+    'GERALD R. FORD', 'JIMMY CARTER', 'RONALD REAGAN', 'GEORGE BUSH', 'WILLIAM J. CLINTON', 'GEORGE W. BUSH', 'BARACK OBAMA', 'DONALD J. TRUMP')
+
+# read in data
+all_speeches <- read_csv('all_presidential_speeches.csv') %>%
+select(-X1) %>%
+filter(president_name %in% president_list) 
+
+# clean president names for consistency with other data
+all_speeches$president_name[all_speeches$president_name=='DONALD J. TRUMP'] <- 'DONALD TRUMP'
+all_speeches$president_name[all_speeches$president_name=='WILLIAM J. CLINTON'] <- 'BILL CLINTON'
+all_speeches$president_name[all_speeches$president_name=='GERALD R. FORD'] <- 'GERALD FORD'
+
+
+# intialize columns for emotions
+  all_speeches$speech_anger<-0
+  all_speeches$speech_antic<-0
+  all_speeches$speech_dis<-0
+  all_speeches$speech_joy<-0
+  all_speeches$speech_sad<-0
+  all_speeches$speech_surp<-0
+  all_speeches$speech_trust<-0
+  all_speeches$speech_fear<-0
+
+
+
+#get speech sentiment then assign to a new variable to be aggregated later
+for (item in seq_along(all_speeches$speech_text)){
+  tempsentence<-get_sentences(all_speeches$speech_text[item])
+  tempsentiment<-get_nrc_sentiment((tempsentence))
+  tempprob<-list(sort(colSums(prop.table(tempsentiment[, 1:8]))))
+  all_speeches$speech_anger[item]<-tempprob[[1]]["anger"]
+  all_speeches$speech_antic[item]<-tempprob[[1]]["anticipation"]
+  all_speeches$speech_fear[item]<-tempprob[[1]]["fear"]
+  all_speeches$speech_joy[item]<-tempprob[[1]]["joy"]
+  all_speeches$speech_sad[item]<-tempprob[[1]]["sadness"]
+  all_speeches$speech_surp[item]<-tempprob[[1]]["surprise"]
+  all_speeches$speech_dis[item]<-tempprob[[1]]["disgust"]
+  all_speeches$speech_trust[item]<-tempprob[[1]]["trust"]} 
+
+
+
+# summarize data for visualition
+speech_data_summarize <- all_speeches %>%
+select(president_name, speech_anger, speech_antic, speech_dis, speech_joy, speech_sad, speech_surp, speech_trust, speech_fear, speech_trust) %>%
+group_by(president_name) %>%
+summarize(Anger = mean(speech_anger, na.rm=TRUE), Anticipation = mean(speech_antic, na.rm=TRUE), Disgust=mean(speech_dis, na.rm = TRUE), Joy=mean(speech_joy, na.rm=TRUE), Sadness = mean(speech_sad, na.rm = TRUE), Surprise = mean(speech_surp, na.rm=TRUE), Fear=mean(speech_fear, na.rm= TRUE), Trust=mean(speech_trust, na.rm=TRUE))
+
+speech_emotions_final<-gather(speech_data_summarize, Emotion, Percentage, Anger:Trust)
+
+#bar plot for testing results only.   
+#barplot(
+#  sort(colSums(prop.table(b3[, 1:8]))), 
+#  horiz = TRUE, 
+#  cex.names = 0.7, 
+#  las = 1, 
+#  main = "Emotions in Sample text", xlab="Percentage"
+#  )
+
+# write csv
+write.csv(speech_emotions_final, 'speech_emotion_for_model_syuzhet.csv')
+
+```
+
+##
